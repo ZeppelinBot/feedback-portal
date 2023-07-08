@@ -1,0 +1,31 @@
+version: '3'
+name: zeppelin-issues-dev
+volumes:
+  home: {}
+  database: {}
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DEV_MYSQL_ROOT_PASSWORD?:Missing DEV_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: zeppelin-issues
+      MYSQL_USER: zeppelin-issues
+      MYSQL_PASSWORD: ${DEV_MYSQL_PASSWORD?:Missing DEV_MYSQL_PASSWORD}
+    ports:
+      - ${DEV_MYSQL_PORT:?Missing DEV_MYSQL_PORT}:3306
+    volumes:
+      - database:/var/lib/mysql
+    command: --authentication-policy=mysql_native_password
+
+  devenv:
+    build:
+      context: ./docker/development/devenv
+      args:
+        DEV_SSH_PASSWORD: ${DEV_SSH_PASSWORD:?Missing DEV_SSH_PASSWORD}
+        DEV_UID: ${DEV_UID:-1000}
+    ports:
+      - "${DEV_WEB_PORT:?Missing DEV_WEB_PORT}:${DEV_WEB_PORT}"
+      - "${DEV_SSH_PORT:?Missing DEV_SSH_PORT}:22"
+    volumes:
+      - home:/home/ubuntu
+      - ./:/zeppelin-issues
