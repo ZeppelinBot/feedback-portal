@@ -10,7 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/css-reset": "^2.1.2",
+    "@chakra-ui/icons": "^2.0.19",
+    "@chakra-ui/next-js": "^2.1.4",
+    "@chakra-ui/react": "^2.7.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "dotenv": "^16.3.1",
+    "framer-motion": "^10.12.18",
     "next": "^13.4.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
