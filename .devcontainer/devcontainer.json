@@ -5,5 +5,5 @@
 
   "service": "devenv",
   "remoteUser": "ubuntu",
-  "workspaceFolder": "/zeppelin-issues"
+  "workspaceFolder": "/var/project/zeppelin-issues"
 }

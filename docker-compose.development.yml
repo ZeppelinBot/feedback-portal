@@ -28,4 +28,6 @@ services:
       - "${DEV_SSH_PORT:?Missing DEV_SSH_PORT}:22"
     volumes:
       - home:/home/ubuntu
-      - ./:/zeppelin-issues
+      # We mount the project in a non-root dir that's owned by the ubuntu user
+      # This prevents weird errors in Next.js dev server's watcher
+      - ./:/var/project/zeppelin-issues

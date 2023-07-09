@@ -22,4 +22,8 @@ RUN echo "ubuntu:${DEV_SSH_PASSWORD}" | chpasswd
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs gcc g++ make python3
 
+# Prepare mount root
+RUN mkdir -p /var/project
+RUN chown ubuntu /var/project
+
 CMD ["/usr/sbin/sshd", "-D", "-e"]
