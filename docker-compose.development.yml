@@ -7,12 +7,12 @@ services:
   mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: ${DEV_MYSQL_ROOT_PASSWORD?:Missing DEV_MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?:Missing MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: zeppelin-issues
       MYSQL_USER: zeppelin-issues
-      MYSQL_PASSWORD: ${DEV_MYSQL_PASSWORD?:Missing DEV_MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD?:Missing MYSQL_PASSWORD}
     ports:
-      - ${DEV_MYSQL_PORT:?Missing DEV_MYSQL_PORT}:3306
+      - ${DEV_MYSQL_HOST_PORT:?Missing DEV_MYSQL_HOST_PORT}:3306
     volumes:
       - database:/var/lib/mysql
     command: --authentication-policy=mysql_native_password

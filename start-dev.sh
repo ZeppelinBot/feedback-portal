@@ -1,5 +1,7 @@
 # Load .env
-export $(cat .env | xargs)
+set -o allexport
+source .env
+set +o allexport
 
 # Start dev server
 npx next dev -p $DEV_WEB_PORT
