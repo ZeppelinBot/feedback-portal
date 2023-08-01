@@ -1,8 +1,12 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Providers } from "./providers";
 import { ClientLayout } from "./clientLayout";
 
-export default function RootLayout({ children }) {
+type RootLayoutProps = {
+  children: ReactNode;
+};
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <head>

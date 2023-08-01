@@ -2,16 +2,23 @@
 
 import { CSSReset, ChakraProvider } from "@chakra-ui/react";
 import { CacheProvider } from "@chakra-ui/next-js";
-import React from "react";
+import { SessionProvider } from "next-auth/react";
+import React, { ReactNode } from "react";
 
-export function Providers({ children }) {
+type ProvidersProps = {
+  children: ReactNode;
+};
+
+export function Providers({ children }: ProvidersProps) {
   return (
     <>
       <CSSReset />
 
       <CacheProvider>
         <ChakraProvider>
-          {children}
+          <SessionProvider>
+            {children}
+          </SessionProvider>
         </ChakraProvider>
       </CacheProvider>
     </>

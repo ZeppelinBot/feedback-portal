@@ -1,9 +1,10 @@
 "use client";
 
 import NextLink from "next/link";
-import { Box, Container, Input, InputGroup, InputLeftElement, Link, Text } from "@chakra-ui/react";
+import { Box, Container, Input, InputGroup, InputLeftElement, Link, Text, Button } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { SearchIcon } from "@chakra-ui/icons";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 type NavLinkProps = {
   href: string;
@@ -20,7 +21,13 @@ function NavLink({ href, children }: NavLinkProps) {
   );
 }
 
-export function ClientLayout({ children }) {
+type ClientLayoutProps = {
+  children: ReactNode;
+};
+
+export function ClientLayout({ children }: ClientLayoutProps) {
+  const { data: session } = useSession();
+
   return (
     <>
       <Box
@@ -56,9 +63,16 @@ export function ClientLayout({ children }) {
             <NavLink href="/">
               New feedback
             </NavLink>
-            <NavLink href="/">
-              Log in
-            </NavLink>
+            {session && (
+              <Button onClick={() => signOut()}>
+                Log out ({session.user?.name})
+              </Button>
+            )}
+            {! session && (
+              <Button onClick={() => signIn("discord")}>
+                Log in
+              </Button>
+            )}
           </Box>
 
           {/* Search */}

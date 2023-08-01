@@ -4,23 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "./start-dev.sh",
+    "dev": "bash ./start-dev.sh",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "debug": "tsc --noEmit"
   },
   "dependencies": {
     "@chakra-ui/css-reset": "^2.1.2",
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/next-js": "^2.1.4",
     "@chakra-ui/react": "^2.7.1",
+    "@discordjs/core": "^1.0.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "dotenv": "^16.3.1",
     "framer-motion": "^10.12.18",
     "next": "^13.4.9",
+    "next-auth": "^4.22.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zod": "^3.21.4"
   },
   "type": "module",
   "devDependencies": {
