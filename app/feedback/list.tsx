@@ -1,76 +1,110 @@
 "use client";
 
-import { Table, TableContainer, Tbody, Th, Thead, Tr, Text, Td, LinkOverlay, useBreakpointValue, LinkBox } from "@chakra-ui/react";
 import { FeedbackItem } from "./types";
-import { TightTh } from "../utils/TightTh";
-import { TightTd } from "../utils/TightTd";
-import NextLink from "next/link";
+import { Table, TableContainer, Td, Th, BodyTr } from "@/components/ui/table";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Pagination } from "../../components/ui/pagination";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
-type FeedbackListProps = {
+type TableListProps = {
   items: FeedbackItem[];
 };
 
-function CardList({ items }: FeedbackListProps) {
-  return (
-    <div>Hi this is a card list</div>
-  );
-}
-
-function TableList({ items }: FeedbackListProps) {
+function TableList({ items }: TableListProps) {
   return (
     <TableContainer>
-        <Table>
-          <Thead>
-            <Tr>
-              <TightTh>Votes</TightTh>
-              <Th>Feedback</Th>
-              <TightTh>Author</TightTh>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {items.map((item, i) => (
-              <Tr key={i}>
-                <TightTd textAlign="center">
-                  <Text as="strong">
-                    {numberFormatter.format(item.votes)}
-                  </Text>
-                </TightTd>
-                <Td>
-                  <LinkBox>
-                    <LinkOverlay as={NextLink} href="#">
-                      <Text as="strong">
-                        {item.title}
-                      </Text>
-                      <Text>
-                        {item.body}
-                      </Text>
-                    </LinkOverlay>
-                  </LinkBox>
-                </Td>
-                <TightTd>
-                  {item.authorName}
-                </TightTd>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+      <Table>
+        <thead>
+          <tr>
+            <Th className="text-center">Votes</Th>
+            <Th>Feedback</Th>
+            <Th className="text-center">Date</Th>
+            <Th>Author</Th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, i) => (
+            <BodyTr key={i}>
+              <Td className="text-center">
+                {numberFormatter.format(item.votes)}
+              </Td>
+              <Td>
+                <div className="font-semibold">
+                  {item.title}
+                  <Badge variant="secondary" className="ml-1">{item.type}</Badge>
+                </div>
+                <div>
+                  {item.body}
+                </div>
+              </Td>
+              <Td className="text-center">{item.date}</Td>
+              <Td>
+                {item.authorName}
+              </Td>
+            </BodyTr>
+          ))}
+        </tbody>
+      </Table>
+    </TableContainer>
   );
 }
 
-export function FeedbackList({ items }: FeedbackListProps) {
-  const listType = useBreakpointValue({
-    base: "cards",
-    md: "table",
-  }, {
-    fallback: "cards"
-  });
+type FeedbackListProps = {
+  items: FeedbackItem[];
+  page: number;
+  perPage: number;
+  totalItems: number;
+};
 
+export function FeedbackList(props: FeedbackListProps) {
   return (
     <div>
-      {listType === "cards" ? <CardList items={items} /> : <TableList items={items} />}
+      <div className="flex justify-between items-center mb-4">
+        {/* Actions */}
+        <div className="relative flex gap-4 items-center">
+          {/* Search */}
+          <div>
+            <div className="absolute top-2 left-3 text-gray-500">
+              <MagnifyingGlassIcon width={24} height={24} />
+            </div>
+            <input
+              type="text"
+              className="p-2 pl-12 border border-gray-400 rounded-3xl"
+              placeholder="Search for feedback..."
+            />
+          </div>
+          <div>
+            <Button variant="secondary">
+              Add feedback
+            </Button>
+          </div>
+        </div>
+
+        {/* Pagination */}
+        <div>
+          <Pagination
+            page={props.page}
+            perPage={props.perPage}
+            totalItems={props.totalItems}
+          />
+        </div>
+      </div>
+
+      <TableList items={props.items} />
+
+      <div className="flex justify-end mt-6">
+        {/* Pagination */}
+        <div>
+          <Pagination
+            page={props.page}
+            perPage={props.perPage}
+            totalItems={props.totalItems}
+          />
+        </div>
+      </div>
     </div>
   );
 }

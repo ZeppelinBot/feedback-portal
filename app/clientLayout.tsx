@@ -1,10 +1,36 @@
 "use client";
 
+import "@fontsource-variable/inter";
+import "./globals.css";
 import NextLink from "next/link";
-import { Box, Container, Input, InputGroup, InputLeftElement, Link, Text, Button } from "@chakra-ui/react";
 import { ReactNode } from "react";
-import { SearchIcon } from "@chakra-ui/icons";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { cn } from "../lib/utils";
+import logoUrl from "./logo.png";
+import Image from "next/image";
+import { Avatar } from "../components/ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
+
+type MenuItemProps = {
+  className?: string;
+  children: ReactNode;
+};
+
+function MenuItem(props: MenuItemProps) {
+  return (
+    <li className={cn("flex-initial m-0 p-0", props.className)}>
+      {props.children}
+    </li>
+  );
+}
+
+function MenuSeparator() {
+  return (
+    <li className="flex-initial w-0 border-l border-gray-200"></li>
+  );
+}
+
+const navLinkClasses = "font-semibold";
 
 type NavLinkProps = {
   href: string;
@@ -13,11 +39,9 @@ type NavLinkProps = {
 
 function NavLink({ href, children }: NavLinkProps) {
   return (
-    <Link as={NextLink} href={href}>
-      <Text fontSize="md" fontWeight="600">
-        {children}
-      </Text>
-    </Link>
+    <NextLink href={href} className={navLinkClasses}>
+      {children}
+    </NextLink>
   );
 }
 
@@ -29,72 +53,64 @@ export function ClientLayout({ children }: ClientLayoutProps) {
   const { data: session } = useSession();
 
   return (
-    <>
-      <Box
-        as="header"
-        boxShadow="0 0 3px rgba(0, 0, 0, 0.15)"
-      >
-        <Container
-          maxW="1440px"
-          display="flex"
-          gap="32px"
-          paddingTop="16px"
-          paddingBottom="16px"
-          alignItems="center"
-        >
-          {/* Logo/branding */}
-          <Box
-            flex="0 0 auto"
-          >
-            <Text fontSize="lg" as="strong">
-              Zeppelin Feedback Portal
-            </Text>
-          </Box>
+    <div className="container mx-auto max-w-[1280px] px-4 py-8">
+      {/* Header */}
+      <header className="flex justify-between">
+        {/* Logo */}
+        <div className="flex-initial flex gap-5 align-center">
+          <Image
+            src={logoUrl}
+            alt=""
+            width={80}
+          />
+          <div className="text-2xl">Zeppelin Feedback Portal</div>
+        </div>
 
-          {/* Nav */}
-          <Box
-            flex="1 1 100%"
-            display="flex"
-            gap="32px"
-          >
-            <NavLink href="/">
-              Overview
-            </NavLink>
-            <NavLink href="/">
-              New feedback
-            </NavLink>
-            {session && (
-              <Button onClick={() => signOut()}>
-                Log out ({session.user?.name})
-              </Button>
+        {/* Menu */}
+        <div className="flex-initial">
+          <ul role="menu" className="flex-initial m-0 p-0 flex gap-6">
+            <MenuItem>
+              <NavLink href="/">
+                Home
+              </NavLink>
+            </MenuItem>
+            <MenuSeparator />
+            {session?.user && <>
+              <MenuItem className="flex items-center gap-2">
+                <Avatar className="w-6 h-6">
+                  <AvatarImage src={session.user.image!} />
+                </Avatar>
+                {session.user.name!}
+              </MenuItem>
+              <MenuItem>
+                <a
+                  href="#"
+                  className={navLinkClasses}
+                  onClick={() => signOut()}
+                >
+                  Log out
+                </a>
+              </MenuItem>
+            </>}
+            {! session?.user && (
+              <MenuItem>
+                  <a
+                    href="#"
+                    className={navLinkClasses}
+                    onClick={() => signIn("discord")}
+                  >
+                    Log in
+                  </a>
+              </MenuItem>
             )}
-            {! session && (
-              <Button onClick={() => signIn("discord")}>
-                Log in
-              </Button>
-            )}
-          </Box>
-
-          {/* Search */}
-          <Box
-            width="30vw"
-            minWidth="280px"
-          >
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <SearchIcon />
-              </InputLeftElement>
-              <Input size="md" placeholder="Search feedback..." />
-            </InputGroup>
-          </Box>
-        </Container>
-      </Box>
-      <Container
-        maxW="1440px"
-        marginTop="32px"
-      >
+          </ul>
+        </div>
+      </header>
+      
+      {/* Content */}
+      <main className="mt-16">
         {children}
-      </Container>
-    </>
+      </main>
+    </div>
   );
 }
