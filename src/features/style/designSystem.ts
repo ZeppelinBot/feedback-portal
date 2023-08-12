@@ -1,4 +1,4 @@
-import { range } from "../../lib/utils";
+import { range } from "../../utils";
 
 type GeneratedColors = {
   "100": string;

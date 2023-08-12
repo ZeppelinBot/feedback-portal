@@ -1,5 +1,5 @@
 import { css } from "styled-components";
-import { keys } from "../../lib/utils";
+import { keys } from "../../utils";
 import { inDarkTheme, inLightTheme, inRootDarkTheme, inRootLightTheme } from "./theme";
 
 const colors = {

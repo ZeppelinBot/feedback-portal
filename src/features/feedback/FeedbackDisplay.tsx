@@ -1,15 +1,15 @@
 "use client";
 
 import { FeedbackItem } from "./types";
-import { Pagination } from "../components/Pagination";
-import { Comment, SearchAlt, UpArrowCircle, Time, UpArrow, UpArrowAlt, Chat } from "@styled-icons/boxicons-regular";
+import { Pagination } from "../../components/Pagination";
+import { SearchAlt, Time, UpArrowAlt, Chat } from "@styled-icons/boxicons-regular";
 import styled, { css } from "styled-components";
 import { HiddenUntil, atBreakpoint, untilBreakpoint } from "../style/breakpoints";
 import { ds } from "../style/designSystem";
 import { OnlyInDarkTheme, OnlyInLightTheme, inDarkTheme, inLightTheme } from "../style/theme";
 import NextLink from "next/link";
-import { Button } from "../components/Button";
-import { Comment as SolidComment, Chat as SolidChat } from "@styled-icons/boxicons-solid";
+import { Button } from "../../components/Button";
+import { Chat as SolidChat } from "@styled-icons/boxicons-solid";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 

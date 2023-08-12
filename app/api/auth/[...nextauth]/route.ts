@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { REST } from "@discordjs/rest";
 import { Routes, RESTGetCurrentUserGuildMemberResult } from "@discordjs/core/http-only";
-import { env } from "../../../env";
+import { env } from "../../../../src/env";
 
 const handler = NextAuth({
   providers: [

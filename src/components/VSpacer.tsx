@@ -1,4 +1,4 @@
-import { ds } from "../style/designSystem";
+import { ds } from "../features/style/designSystem";
 
 type SpacerProps = {
   size: keyof typeof ds.spacing;

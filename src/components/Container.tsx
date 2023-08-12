@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
-import { ds } from "../style/designSystem";
-import { atBreakpoint } from "../style/breakpoints";
+import { ds } from "../features/style/designSystem";
+import { atBreakpoint } from "../features/style/breakpoints";
 
 export const Container = styled.div`
   width: 100%;

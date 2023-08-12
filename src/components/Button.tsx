@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
-import { ds } from "../style/designSystem";
+import { ds } from "../features/style/designSystem";
 import { ReactElement, ReactNode } from "react";
-import { inDarkTheme, inLightTheme } from "../style/theme";
+import { inDarkTheme, inLightTheme } from "../features/style/theme";
 import NextLink from "next/link";
 
 type ButtonProps = {

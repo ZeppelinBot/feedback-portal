@@ -2,13 +2,13 @@
 
 import styled, { css } from "styled-components";
 import React, { ReactElement } from "react";
-import logoUrl from "../logo.png";
+import logoUrl from "./logo.png";
 import Image from "next/image";
-import { ds } from "../style/designSystem";
+import { ds } from "../src/features/style/designSystem";
 import { signIn, useSession } from "next-auth/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import { atBreakpoint } from "../style/breakpoints";
+import { atBreakpoint } from "../src/features/style/breakpoints";
 
 const HeaderWrapper = styled.header`
   display: flex;

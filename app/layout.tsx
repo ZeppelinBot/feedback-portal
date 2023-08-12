@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { Providers } from "./providers";
 import { ClientLayout } from "./clientLayout";
+import { StyledComponentsRegistry } from "../src/features/style/StyledComponentsRegistry";
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -13,11 +14,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <title>Zeppelin Feedback Portal</title>
       </head>
       <body>
-        <Providers>
-          <ClientLayout>
-            {children}
-          </ClientLayout>
-        </Providers>
+        <StyledComponentsRegistry>
+          <Providers>
+            <ClientLayout>
+              {children}
+            </ClientLayout>
+          </Providers>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );

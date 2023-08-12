@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import styled, { css } from "styled-components";
-import { atBreakpoint } from "../style/breakpoints";
-import { ds } from "../style/designSystem";
+import { atBreakpoint } from "../src/features/style/breakpoints";
+import { ds } from "../src/features/style/designSystem";
 
 const MobileFooterWrapper = styled.div`
   position: fixed;

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 export function useBreakpoint(width: string, until = false) {
   const [status, setStatus] = useState(false);
-  console.log(`useBreakpoint ${width}:`, status);
 
   useEffect(() => {
     const mediaStr = until ? `(max-width: calc(${width} - 1px))` : `(min-width: ${width})`;

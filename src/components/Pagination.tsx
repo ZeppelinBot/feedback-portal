@@ -1,5 +1,5 @@
 import NextLink from "next/link";
-import { range } from "../../lib/utils";
+import { range } from "../utils";
 import { ReactElement } from "react";
 import { Button, NextLinkButton } from "./Button";
 import styled from "styled-components";

@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { ds } from "../style/designSystem";
+import { ds } from "../features/style/designSystem";
 
-export const H3 = styled.h3`
+export const H1 = styled.h1`
   font: ${ds.text.fonts.heading};
-  font-size: ${ds.text.sizes.h3};
-  font-weight: 500;
+  font-size: ${ds.text.sizes.h1};
+  font-weight: 600;
 
   margin: 1rem 0;
   &:first-child {

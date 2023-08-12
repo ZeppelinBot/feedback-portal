@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
-import { FlattenInterpolation, css } from "styled-components";
+import { RuleSet, css } from "styled-components";
 import { useBreakpoint } from "./useBreakpoint";
 
-export function atBreakpoint(bp: string, input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
+export function atBreakpoint(bp: string, input: RuleSet<object> | string): RuleSet<object> {
   return css`
     @media (min-width: ${bp}) {
       ${input}
@@ -10,7 +10,7 @@ export function atBreakpoint(bp: string, input: FlattenInterpolation<any> | stri
   `;
 }
 
-export function untilBreakpoint(bp: string, input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
+export function untilBreakpoint(bp: string, input: RuleSet<object> | string): RuleSet<object> {
   return css`
     @media (max-width: calc(${bp} - 1px)) {
       ${input}

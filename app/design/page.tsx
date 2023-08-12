@@ -2,14 +2,14 @@
 
 import React, { ReactElement } from "react";
 import styled from "styled-components";
-import { ds } from "../style/designSystem";
-import { keys } from "../../lib/utils";
-import { H1 } from "../components/H1";
-import { H2 } from "../components/H2";
-import { H3 } from "../components/H3";
-import { Paragraph } from "../components/Paragraph";
-import { Button, ButtonIcon } from "../components/Button";
-import { HSpacer } from "../components/HSpacer";
+import { ds } from "../../src/features/style/designSystem";
+import { keys } from "../../src/utils";
+import { H1 } from "../../src/components/H1";
+import { H2 } from "../../src/components/H2";
+import { H3 } from "../../src/components/H3";
+import { Paragraph } from "../../src/components/Paragraph";
+import { Button, ButtonIcon } from "../../src/components/Button";
+import { HSpacer } from "../../src/components/HSpacer";
 import { Save } from "@styled-icons/boxicons-solid";
 
 const Wrapper = styled.div`

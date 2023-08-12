@@ -1,6 +1,6 @@
 import React from "react";
-import { FeedbackDisplay } from "./feedback/FeedbackDisplay";
-import { FeedbackItem } from "./feedback/types";
+import { FeedbackDisplay } from "../src/features/feedback/FeedbackDisplay";
+import { FeedbackItem } from "../src/features/feedback/types";
 import { z } from "zod";
 
 const placeholderItems = [
