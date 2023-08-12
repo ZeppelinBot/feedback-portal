@@ -1,8 +1,13 @@
 import NextLink from "next/link";
 import { range } from "../../lib/utils";
 import { ReactElement } from "react";
+import { Button, NextLinkButton } from "./Button";
+import styled from "styled-components";
 
-const cn = (...args: Array<string | undefined>) => args.map(v => String(v)).join(" ");
+const PageList = styled.div`
+  display: flex;
+  gap: 4px;
+`;
 
 type PaginationLinkProps = {
   pageParam: string;
@@ -11,24 +16,20 @@ type PaginationLinkProps = {
 };
 
 function PaginationLink(props: PaginationLinkProps) {
-  let className = "block border border-gray-300 shadow-sm px-2 rounded min-w-[30px] text-center";
-  if (props.isActive) {
-    className = cn(className, "font-semibold bg-slate-500 border-slate-600 text-white");
-  }
-
   return (
-    <NextLink
-      className={className}
+    <NextLinkButton
       href={{ query: { [props.pageParam]: props.page } }}
+      $variant={props.isActive ? "secondary" : "basic"}
+      $size="small"
     >
       {props.page}
-    </NextLink>
+    </NextLinkButton>
   );
 }
 
 function PaginationSeparator() {
   return (
-    <div className="w-[30px] text-center">
+    <div>
       ...
     </div>
   );
@@ -62,7 +63,7 @@ export function Pagination(props: PaginationProps): ReactElement {
   }
 
   return (
-    <div className="flex gap-1">
+    <PageList>
       {startPage > 1 && (
         <>
           <PaginationLink
@@ -95,6 +96,6 @@ export function Pagination(props: PaginationProps): ReactElement {
           />
         </>
       )}
-    </div>
+    </PageList>
   );
 }

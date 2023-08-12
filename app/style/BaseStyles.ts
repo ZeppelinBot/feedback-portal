@@ -18,5 +18,6 @@ export const BaseStyles = createGlobalStyle`
     font: ${ds.text.fonts.body};
     color: ${ds.colorPresets.bodyText};
     background: ${ds.colorPresets.background};
+    margin: 0;
   }
 `;

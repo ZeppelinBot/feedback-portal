@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import { ds } from "../style/designSystem";
 import { ReactElement, ReactNode } from "react";
 import { inDarkTheme, inLightTheme } from "../style/theme";
+import NextLink from "next/link";
 
 type ButtonProps = {
   $variant?: "basic" | "primary" | "secondary" | "danger" | "rainbow";
@@ -13,7 +14,7 @@ const ButtonIconWrapper = styled.div`
   line-height: 0;
 `;
 
-export const Button = styled.button<ButtonProps>`
+const buttonStyles = css<ButtonProps>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -52,9 +53,13 @@ export const Button = styled.button<ButtonProps>`
     ${inLightTheme(css`
       background-color: ${ds.colors.gray.light["100"]};
       border: 1px solid ${ds.colors.gray.light["400"]};
-      color: ${ds.colors.gray.light["900"]};
 
-      box-shadow: inset 0 -2px 6px hsl(0 0% 0% / 10%), 0 1px 2px -2px black;
+      color: ${ds.colors.gray.light["900"]};
+      &:visited {
+        color: ${ds.colors.gray.light["900"]};
+      }
+
+      box-shadow: inset 0 -2px 6px hsl(0 0% 0% / 3%), 0 1px 2px -2px black;
 
       &:hover {
         background-color: ${ds.colors.gray.light["200"]};
@@ -67,8 +72,12 @@ export const Button = styled.button<ButtonProps>`
 
     ${inDarkTheme(css`
       background-color: ${ds.colors.gray.dark["400"]};
-      border: none;
+      border: 1px solid transparent;
+
       color: ${ds.colors.gray.dark["900"]};
+      &:visited {
+        color: ${ds.colors.gray.dark["900"]};
+      }
 
       box-shadow: inset 0 -2px 6px hsl(0 0% 0% / 10%), 0 1px 2px -2px black;
 
@@ -84,9 +93,14 @@ export const Button = styled.button<ButtonProps>`
 
   ${props => props.$variant === "primary" && css`
     background-color: ${ds.colors.green.light["600"]};
-    color: ${ds.colors.gray.light["100"]};
+    border: 1px solid transparent;
     background-image: linear-gradient(to bottom, transparent, hsl(0 0% 0% / 10%));
     font-weight: 500;
+
+    color: ${ds.colors.gray.light["100"]};
+    &:visited {
+      color: ${ds.colors.gray.light["100"]};
+    }
 
     &:hover {
       background-color: ${ds.colors.green.light["700"]};
@@ -99,9 +113,14 @@ export const Button = styled.button<ButtonProps>`
 
   ${props => props.$variant === "secondary" && css`
     background-color: ${ds.colors.blue.light["600"]};
-    color: ${ds.colors.gray.light["100"]};
+    border: 1px solid transparent;
     background-image: linear-gradient(to bottom, transparent, hsl(0 0% 0% / 10%));
     font-weight: 500;
+
+    color: ${ds.colors.gray.light["100"]};
+    &:visited {
+      color: ${ds.colors.gray.light["100"]};
+    }
 
     &:hover {
       background-color: ${ds.colors.blue.light["700"]};
@@ -114,9 +133,14 @@ export const Button = styled.button<ButtonProps>`
 
   ${props => props.$variant === "danger" && css`
     background-color: ${ds.colors.red.light["600"]};
-    color: ${ds.colors.gray.light["100"]};
+    border: 1px solid transparent;
     background-image: linear-gradient(to bottom, transparent, hsl(0 0% 0% / 10%));
     font-weight: 500;
+
+    color: ${ds.colors.gray.light["100"]};
+    &:visited {
+      color: ${ds.colors.gray.light["100"]};
+    }
 
     &:hover {
       background-color: ${ds.colors.red.light["700"]};
@@ -133,7 +157,11 @@ export const Button = styled.button<ButtonProps>`
     border: 2px solid transparent;
     margin: -1px;
     border-radius: 6px;
+
     color: ${ds.colors.gray.dynamic["900"]};
+    &:visited {
+      color: ${ds.colors.gray.dynamic["900"]};
+    }
 
     box-shadow:
       inset 0 -16px 16px -16px hsl(0 0% 0% / 15%),
@@ -149,6 +177,20 @@ export const Button = styled.button<ButtonProps>`
         inset 0 0 0 999px ${ds.colors.gray.dynamic["100"]};
     }
   `}
+`;
+
+export const Button = styled.button<ButtonProps>`
+  ${buttonStyles}
+`;
+
+export const LinkButton = styled.a<ButtonProps>`
+  text-decoration: none;
+  ${buttonStyles}
+`;
+
+export const NextLinkButton = styled(NextLink)<ButtonProps>`
+  text-decoration: none;
+  ${buttonStyles}
 `;
 
 type GenericIcon = (props: { size: number }) => ReactNode;

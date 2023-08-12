@@ -1,10 +1,11 @@
 import React from "react";
-import { FeedbackList } from "./feedback/list";
+import { FeedbackDisplay } from "./feedback/FeedbackDisplay";
 import { FeedbackItem } from "./feedback/types";
 import { z } from "zod";
 
 const placeholderItems = [
   {
+    id: 1,
     votes: 1000,
     title: "Level system",
     body: "You know how some other bots have a really cool level system...",
@@ -13,6 +14,7 @@ const placeholderItems = [
     date: "13 Jul 2023",
   },
   {
+    id: 2,
     votes: 72,
     title: "Everything is broken",
     body: "Literally everything.",
@@ -21,6 +23,7 @@ const placeholderItems = [
     date: "2 Aug 2023",
   },
   {
+    id: 3,
     votes: 3,
     title: "API keys in dashboard",
     body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tristique velit sit amet vulputate aliquam.",
@@ -47,7 +50,7 @@ export default function Index(props: IndexProps) {
   const page = Math.min(Math.ceil(totalItems / perPage), Math.max(1, searchParams.page ?? 1));
 
   return (
-    <FeedbackList
+    <FeedbackDisplay
       items={placeholderItems}
       page={page}
       perPage={perPage}

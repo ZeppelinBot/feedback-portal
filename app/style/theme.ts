@@ -1,9 +1,11 @@
-import { FlattenInterpolation, css } from "styled-components";
+import styled, { FlattenInterpolation, css } from "styled-components";
 
 export function inLightTheme(input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
   return css`
     @media (prefers-color-scheme: light) {
-      ${input}
+      &&:not(.__theme-dark &&) {
+        ${input}
+      }
     }
 
     &.__theme-light {
@@ -20,7 +22,9 @@ export function inLightTheme(input: FlattenInterpolation<any> | string): Flatten
 export function inDarkTheme(input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
   return css`
     @media (prefers-color-scheme: dark) {
-      ${input}
+      &&:not(.__theme-light &&) {
+        ${input}
+      }
     }
 
     &.__theme-dark {
@@ -57,3 +61,17 @@ export function inRootDarkTheme(input: FlattenInterpolation<any> | string): Flat
     }
   `;
 }
+
+export const OnlyInLightTheme = styled.div`
+  display: none;
+  ${inLightTheme(css`
+    display: block;
+  `)}
+`;
+
+export const OnlyInDarkTheme = styled.div`
+  display: none;
+  ${inDarkTheme(css`
+    display: block;
+  `)}
+`;

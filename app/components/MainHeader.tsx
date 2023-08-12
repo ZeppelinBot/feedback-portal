@@ -8,15 +8,27 @@ import { ds } from "../style/designSystem";
 import { signIn, useSession } from "next-auth/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
+import { atBreakpoint } from "../style/breakpoints";
 
 const HeaderWrapper = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  margin-bottom: 32px;
+  ${atBreakpoint(ds.breakpoints.md, css`
+    margin-bottom: 64px;
+  `)}
 `;
 
 const LogoArea = styled.div`
-  flex: 0 0 auto;
+  flex: 1 1 100%;
+  margin-top: 16px;
+
+  ${atBreakpoint(ds.breakpoints.md, css`
+    flex: 0 0 auto;
+    margin-top: 0;
+  `)}
 `;
 
 const LogoAreaLink = styled(NextLink)`
@@ -28,21 +40,46 @@ const LogoAreaLink = styled(NextLink)`
   }
 
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
+
+  ${atBreakpoint(ds.breakpoints.md, css`
+    gap: 24px;
+  `)}
+`;
+
+const LogoImageWrapper = styled.div`
+  position: relative;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+
+  ${atBreakpoint(ds.breakpoints.md, css`
+  width: 80px;
+  `)}
 `;
 
 const MainHeading = styled.h1`
   font: ${ds.text.fonts.heading};
-  font-size: 28px;
+  font-size: 18px;
   font-weight: 400;
   margin: 0;
+
+  ${atBreakpoint(ds.breakpoints.md, css`
+  font-size: 28px;
+  `)}
 `;
 
 const MenuArea = styled.menu`
   flex: 0 0 auto;
   margin: 0;
   padding: 0;
+
+  display: none;
+  ${atBreakpoint(ds.breakpoints.md, css`
+    display: block;
+  `)}
 `;
 
 const MenuList = styled.ul`
@@ -110,11 +147,14 @@ export function MainHeader(): ReactElement {
     <HeaderWrapper>
       <LogoArea>
         <LogoAreaLink href="/">
-          <Image
-            src={logoUrl}
-            alt=""
-            width={80}
-          />
+          <LogoImageWrapper>
+            <Image
+              src={logoUrl}
+              alt=""
+              fill={true}
+              objectFit="contain"
+            />
+          </LogoImageWrapper>
           <MainHeading>
             Zeppelin Feedback Portal
           </MainHeading>

@@ -22,8 +22,8 @@ const generateColors = (name: string): GeneratedColors => {
 
 export const ds = {
   breakpoints: {
-    sm: "360px",
-    md: "720px",
+    sm: "421px",
+    md: "768px",
     lg: "1024px",
     xl: "1280px",
   },
