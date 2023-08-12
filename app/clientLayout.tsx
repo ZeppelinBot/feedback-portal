@@ -1,15 +1,15 @@
 "use client";
 
 import "@fontsource-variable/inter";
-import "./globals.css";
 import NextLink from "next/link";
 import { ReactNode } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { cn } from "../lib/utils";
-import logoUrl from "./logo.png";
-import Image from "next/image";
-import { Avatar } from "../components/ui/avatar";
-import { AvatarImage } from "@radix-ui/react-avatar";
+import { BaseStyles } from "./style/BaseStyles";
+import { MainHeader } from "./components/MainHeader";
+import { Container } from "./components/Container";
+import { VSpacer } from "./components/VSpacer";
+
+const cn = (...args: Array<string | undefined>) => args.map(v => String(v)).join(" ");
 
 type MenuItemProps = {
   className?: string;
@@ -52,65 +52,18 @@ type ClientLayoutProps = {
 export function ClientLayout({ children }: ClientLayoutProps) {
   const { data: session } = useSession();
 
-  return (
-    <div className="container mx-auto max-w-[1280px] px-4 py-8">
-      {/* Header */}
-      <header className="flex justify-between">
-        {/* Logo */}
-        <div className="flex-initial flex gap-5 align-center">
-          <Image
-            src={logoUrl}
-            alt=""
-            width={80}
-          />
-          <div className="text-2xl">Zeppelin Feedback Portal</div>
-        </div>
+  return <>
+    <BaseStyles />
 
-        {/* Menu */}
-        <div className="flex-initial">
-          <ul role="menu" className="flex-initial m-0 p-0 flex gap-6">
-            <MenuItem>
-              <NavLink href="/">
-                Home
-              </NavLink>
-            </MenuItem>
-            <MenuSeparator />
-            {session?.user && <>
-              <MenuItem className="flex items-center gap-2">
-                <Avatar className="w-6 h-6">
-                  <AvatarImage src={session.user.image!} />
-                </Avatar>
-                {session.user.name!}
-              </MenuItem>
-              <MenuItem>
-                <a
-                  href="#"
-                  className={navLinkClasses}
-                  onClick={() => signOut()}
-                >
-                  Log out
-                </a>
-              </MenuItem>
-            </>}
-            {! session?.user && (
-              <MenuItem>
-                  <a
-                    href="#"
-                    className={navLinkClasses}
-                    onClick={() => signIn("discord")}
-                  >
-                    Log in
-                  </a>
-              </MenuItem>
-            )}
-          </ul>
-        </div>
-      </header>
-      
+    <Container>
+      <MainHeader />
+
+      <VSpacer size="8" />
+
       {/* Content */}
       <main className="mt-16">
         {children}
       </main>
-    </div>
-  );
+    </Container>
+  </>;
 }

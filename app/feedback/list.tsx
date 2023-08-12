@@ -2,10 +2,8 @@
 
 import { FeedbackItem } from "./types";
 import { Table, TableContainer, Td, Th, BodyTr } from "@/components/ui/table";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Pagination } from "../../components/ui/pagination";
-import { Button } from "../../components/ui/button";
-import { Badge } from "../../components/ui/badge";
+import { SearchAlt } from "@styled-icons/boxicons-regular";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -34,7 +32,7 @@ function TableList({ items }: TableListProps) {
               <Td>
                 <div className="font-semibold">
                   {item.title}
-                  <Badge variant="secondary" className="ml-1">{item.type}</Badge>
+                  {/* <Badge variant="secondary" className="ml-1">{item.type}</Badge> */}
                 </div>
                 <div>
                   {item.body}
@@ -68,7 +66,7 @@ export function FeedbackList(props: FeedbackListProps) {
           {/* Search */}
           <div>
             <div className="absolute top-2 left-3 text-gray-500">
-              <MagnifyingGlassIcon width={24} height={24} />
+              <SearchAlt size={24} />
             </div>
             <input
               type="text"
@@ -77,9 +75,9 @@ export function FeedbackList(props: FeedbackListProps) {
             />
           </div>
           <div>
-            <Button variant="secondary">
+            {/* <Button>
               Add feedback
-            </Button>
+            </Button> */}
           </div>
         </div>
 

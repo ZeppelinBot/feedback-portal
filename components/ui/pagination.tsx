@@ -1,6 +1,8 @@
 import NextLink from "next/link";
-import { cn, range } from "../../lib/utils";
+import { range } from "../../lib/utils";
 import { ReactElement } from "react";
+
+const cn = (...args: Array<string | undefined>) => args.map(v => String(v)).join(" ");
 
 type PaginationLinkProps = {
   pageParam: string;

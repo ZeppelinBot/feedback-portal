@@ -4,4 +4,6 @@ export type FeedbackItem = {
   title: string;
   body: string;
   authorName: string;
+  type: string;
+  date: string;
 };
