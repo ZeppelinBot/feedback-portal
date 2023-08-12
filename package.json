@@ -21,7 +21,7 @@
     "next-auth": "^4.22.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^5.3.11",
+    "styled-components": "^6.0.7",
     "styled-icons": "^10.47.0",
     "zod": "^3.21.4"
   },
@@ -30,7 +30,6 @@
     "@babel/plugin-proposal-class-static-block": "^7.21.0",
     "@types/node": "20.4.1",
     "@types/react": "18.2.14",
-    "@types/styled-components": "^5.1.26",
     "babel-plugin-styled-components": "^2.1.4",
     "typescript": "5.1.6"
   }
