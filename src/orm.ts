@@ -1,5 +1,3 @@
-"use server";
-
 import { MikroORM, Options } from "@mikro-orm/core";
 import type { PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { env } from "./env";
@@ -21,6 +19,7 @@ export const mikroOrmOptions: Options<PostgreSqlDriver> = {
     FeedbackCommentSchema,
   ],
   type: "postgresql",
+  host: "postgres",
   dbName: "postgres",
   user: "postgres",
   password: env.POSTGRES_PASSWORD,
