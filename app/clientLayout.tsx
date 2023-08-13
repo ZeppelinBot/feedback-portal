@@ -3,25 +3,26 @@
 import "@fontsource-variable/inter";
 import { ReactNode } from "react";
 import { BaseStyles } from "../src/features/style/BaseStyles";
-import { MainHeader } from "./MainHeader";
+// import { MainHeader } from "./MainHeader";
 import { Container } from "../src/components/Container";
 import { MobileFooter } from "./MobileFooter";
 
 type ClientLayoutProps = {
+  header: ReactNode;
   children: ReactNode;
 };
 
-export function ClientLayout({ children }: ClientLayoutProps) {
+export function ClientLayout(props: ClientLayoutProps) {
   return <>
     <BaseStyles />
 
     <Container>
-      <MainHeader />
+      {props.header}
       <MobileFooter />
 
       {/* Content */}
       <main>
-        {children}
+        {props.children}
       </main>
     </Container>
   </>;

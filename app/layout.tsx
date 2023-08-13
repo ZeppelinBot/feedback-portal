@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { Providers } from "./providers";
 import { ClientLayout } from "./clientLayout";
 import { StyledComponentsRegistry } from "../src/features/style/StyledComponentsRegistry";
+import { MainHeader } from "./MainHeader";
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -16,7 +17,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body>
         <StyledComponentsRegistry>
           <Providers>
-            <ClientLayout>
+            <ClientLayout header={<MainHeader />}>
               {children}
             </ClientLayout>
           </Providers>

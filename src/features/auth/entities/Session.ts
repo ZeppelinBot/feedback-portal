@@ -23,6 +23,6 @@ export const SessionSchema = new EntitySchema<Session>({
     sessionToken: { type: String, fieldName: "session_token" },
 
     // Relations
-    user: { reference: "m:1", entity: () => User },
+    user: { reference: "m:1", entity: () => User, nullable: true },
   },
 });

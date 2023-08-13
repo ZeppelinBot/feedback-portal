@@ -13,7 +13,7 @@ export async function FeedbackLoader(params: FeedbackLoaderProps) {
   const em = (await getOrm()).em.fork();
 
   const qb = params.searchTerm
-    ? em.createQueryBuilder(FeedbackPost).where("title LIKE ?", [`%${params.searchTerm}%`])
+    ? em.createQueryBuilder(FeedbackPost).where("title ILIKE ?", [`%${params.searchTerm}%`])
     : em.createQueryBuilder(FeedbackPost);
 
   const totalItems = await qb.clone().count();

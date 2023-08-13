@@ -23,6 +23,11 @@ const SearchLocation = styled.div`
   `)}
 `;
 
+const SearchForm = styled.form`
+  display: flex;
+  gap: 16px;
+`;
+
 const SearchBarWrapper = styled.div`
   position: relative;
   width: 300px;
@@ -80,17 +85,23 @@ export function FeedbackDisplaySearch(props: FeedbackDisplaySearchProps) {
 
   return (
     <SearchLocation>
-      <SearchBarWrapper>
-        <SearchIconWrapper>
-          <SearchAlt size={24} />
-        </SearchIconWrapper>
-        <SearchBar
-          type="text"
-          value={searchTerm}
-          onChange={(ev) => setSearchTerm(ev.target.value)}
-          placeholder="Search for feedback..."
-        />
-      </SearchBarWrapper>
+      <SearchForm action="">
+        <SearchBarWrapper>
+          <SearchIconWrapper>
+            <SearchAlt size={24} />
+          </SearchIconWrapper>
+          <SearchBar
+            name="searchTerm"
+            type="text"
+            value={searchTerm}
+            onChange={(ev) => setSearchTerm(ev.target.value)}
+            placeholder="Search for feedback..."
+          />
+        </SearchBarWrapper>
+        <noscript>
+          <Button>Search</Button>
+        </noscript>
+      </SearchForm>
       <div className={bpUtilityClasses.hiddenUntil.md}>
         <Button $variant="primary">
           Submit feedback
