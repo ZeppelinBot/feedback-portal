@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   SECRET: z.string().length(32),
-  MYSQL_PASSWORD: z.string().nonempty(),
+  POSTGRES_PASSWORD: z.string().nonempty(),
   DISCORD_CLIENT_ID: z.string().nonempty(),
   DISCORD_CLIENT_SECRET: z.string().nonempty(),
   AUTH_GUILD_ID: z.string().nonempty(),
@@ -15,4 +15,5 @@ const envSchema = z.object({
     : z.string().url(),
 });
 
+console.log('hi?');
 export const env = envSchema.parse(process.env);

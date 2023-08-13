@@ -2,20 +2,16 @@ version: '3'
 name: zeppelin-issues-dev
 volumes:
   home: {}
-  database: {}
+  postgres-data: {}
 services:
-  mysql:
-    image: mysql:8.0
+  postgres:
+    image: postgres:15
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?:Missing MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: zeppelin-issues
-      MYSQL_USER: zeppelin-issues
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD?:Missing MYSQL_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?:Missing POSTGRES_PASSWORD}
     ports:
-      - ${DEV_MYSQL_HOST_PORT:?Missing DEV_MYSQL_HOST_PORT}:3306
+      - ${DEV_POSTGRES_HOST_PORT:?Missing DEV_POSTGRES_HOST_PORT}:5432
     volumes:
-      - database:/var/lib/mysql
-    command: --authentication-policy=mysql_native_password
+      - postgres-data:/var/lib/postgresql
 
   devenv:
     build:
