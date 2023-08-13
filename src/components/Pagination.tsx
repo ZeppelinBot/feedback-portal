@@ -47,6 +47,7 @@ type PaginationProps = {
   perPage: number;
   totalItems: number;
   otherQueryParams?: Record<string, any>;
+  className?: string;
 };
 
 export function Pagination(props: PaginationProps): ReactElement {
@@ -73,7 +74,7 @@ export function Pagination(props: PaginationProps): ReactElement {
   };
 
   return (
-    <PageList>
+    <PageList className={props.className}>
       {startPage > 1 && (
         <>
           <PaginationLink

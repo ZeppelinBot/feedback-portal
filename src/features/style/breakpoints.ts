@@ -1,6 +1,5 @@
-import { ReactNode } from "react";
 import { RuleSet, css } from "styled-components";
-import { useBreakpoint } from "./useBreakpoint";
+import { ds } from "./designSystem";
 
 export function atBreakpoint(bp: string, input: RuleSet<object> | string): RuleSet<object> {
   return css`
@@ -18,17 +17,33 @@ export function untilBreakpoint(bp: string, input: RuleSet<object> | string): Ru
   `;
 }
 
-type BpToggleProps = {
-  bp: string;
-  children: ReactNode;
+export const bpUtilityCss: Array<RuleSet<object>> = [];
+for (const [name, minWidth] of Object.entries(ds.breakpoints)) {
+  bpUtilityCss.push(untilBreakpoint(minWidth, css`
+    .__hidden-until-${name} {
+      display: none;
+    }
+  `));
+  bpUtilityCss.push(atBreakpoint(minWidth, css`
+    .__hidden-after-${name} {
+      display: none;
+    }
+  `));
+}
+
+type BpName = keyof typeof ds.breakpoints;
+export type BpUtilityClasses = {
+  hiddenUntil: Record<BpName, string>;
+  hiddenAfter: Record<BpName, string>;
 };
 
-export function HiddenUntil(props: BpToggleProps) {
-  const matches = useBreakpoint(props.bp);
-  return matches ? props.children : undefined;
-}
-
-export function HiddenAfter(props: BpToggleProps) {
-  const matches = useBreakpoint(props.bp, true);
-  return matches ? props.children : undefined;
-}
+export const bpUtilityClasses: BpUtilityClasses = {
+  hiddenUntil: Object.keys(ds.breakpoints).reduce((map, name) => {
+    map[name as BpName] = `__hidden-until-${name}`;
+    return map;
+  }, {} as BpUtilityClasses["hiddenUntil"]),
+  hiddenAfter: Object.keys(ds.breakpoints).reduce((map, name) => {
+    map[name as BpName] = `__hidden-until-${name}`;
+    return map;
+  }, {} as BpUtilityClasses["hiddenAfter"]),
+};

@@ -6,7 +6,7 @@ import NextLink from "next/link";
 import styled, { css } from "styled-components";
 import { atBreakpoint, untilBreakpoint } from "../style/breakpoints";
 import { ds } from "../style/designSystem";
-import { OnlyInDarkTheme, OnlyInLightTheme, inDarkTheme, inLightTheme } from "../style/theme";
+import { OnlyInDarkTheme, OnlyInLightTheme, inDarkTheme, inLightTheme, onlyInDarkThemeClass, onlyInLightThemeClass } from "../style/theme";
 import type { ClientFeedbackPost } from "./entities/ClientFeedbackPost";
 import humanizeDuration from "humanize-duration";
 import { shortEnglishHumanizer } from "../../utils/shortEnglishHumanizer";
@@ -162,13 +162,9 @@ export function FeedbackList(props: FeedbackListProps) {
               {humanizeShort(Date.now() - post.posted_at.getTime())}
             </FeedbackDate>
             <FeedbackComments>
-              <OnlyInLightTheme>
-                <Chat size={18} />
-              </OnlyInLightTheme>
-              <OnlyInDarkTheme>
-                <SolidChat size={18} />
-              </OnlyInDarkTheme>
-              0
+              <Chat size={18} className={onlyInLightThemeClass} />
+              <SolidChat size={18} className={onlyInDarkThemeClass} />
+              {post.num_comments}
             </FeedbackComments>
           </FeedbackListLink>
         </FeedbackListItem>

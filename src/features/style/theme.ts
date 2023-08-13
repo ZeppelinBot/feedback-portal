@@ -1,6 +1,6 @@
-import styled, { FlattenInterpolation, css } from "styled-components";
+import styled, { RuleSet, css } from "styled-components";
 
-export function inLightTheme(input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
+export function inLightTheme(input: RuleSet<object> | string): RuleSet<object> {
   return css`
     @media (prefers-color-scheme: light) {
       &&:not(.__theme-dark &&) {
@@ -19,7 +19,7 @@ export function inLightTheme(input: FlattenInterpolation<any> | string): Flatten
   `;
 }
 
-export function inDarkTheme(input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
+export function inDarkTheme(input: RuleSet<object> | string): RuleSet<object> {
   return css`
     @media (prefers-color-scheme: dark) {
       &&:not(.__theme-light &&) {
@@ -38,7 +38,7 @@ export function inDarkTheme(input: FlattenInterpolation<any> | string): FlattenI
   `;
 }
 
-export function inRootLightTheme(input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
+export function inRootLightTheme(input: RuleSet<object> | string): RuleSet<object> {
   return css`
     @media (prefers-color-scheme: light) {
       ${input}
@@ -50,7 +50,7 @@ export function inRootLightTheme(input: FlattenInterpolation<any> | string): Fla
   `;
 }
 
-export function inRootDarkTheme(input: FlattenInterpolation<any> | string): FlattenInterpolation<any> {
+export function inRootDarkTheme(input: RuleSet<object> | string): RuleSet<object> {
   return css`
     @media (prefers-color-scheme: dark) {
       ${input}
@@ -62,16 +62,5 @@ export function inRootDarkTheme(input: FlattenInterpolation<any> | string): Flat
   `;
 }
 
-export const OnlyInLightTheme = styled.div`
-  display: none;
-  ${inLightTheme(css`
-    display: block;
-  `)}
-`;
-
-export const OnlyInDarkTheme = styled.div`
-  display: none;
-  ${inDarkTheme(css`
-    display: block;
-  `)}
-`;
+export const onlyInLightThemeClass = "__only-in-light-theme";
+export const onlyInDarkThemeClass = "__only-in-dark-theme";

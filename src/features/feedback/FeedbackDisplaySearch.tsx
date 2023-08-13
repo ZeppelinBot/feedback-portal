@@ -3,7 +3,7 @@
 import styled, { css } from "styled-components";
 import { ds } from "../style/designSystem";
 import { inDarkTheme } from "../style/theme";
-import { HiddenUntil, atBreakpoint } from "../style/breakpoints";
+import { HiddenUntil, atBreakpoint, bpUtilityClasses } from "../style/breakpoints";
 import { SearchAlt } from "@styled-icons/boxicons-regular";
 import { Button } from "../../components/Button";
 import { useRouter } from "next/navigation";
@@ -91,13 +91,11 @@ export function FeedbackDisplaySearch(props: FeedbackDisplaySearchProps) {
           placeholder="Search for feedback..."
         />
       </SearchBarWrapper>
-      <HiddenUntil bp={ds.breakpoints.md}>
-        <div>
-          <Button $variant="primary">
-            Submit feedback
-          </Button>
-        </div>
-      </HiddenUntil>
+      <div className={bpUtilityClasses.hiddenUntil.md}>
+        <Button $variant="primary">
+          Submit feedback
+        </Button>
+      </div>
     </SearchLocation>
   );
 }

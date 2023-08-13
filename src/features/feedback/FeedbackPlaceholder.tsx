@@ -6,7 +6,7 @@ import { ds } from "../style/designSystem";
 
 const FeedbackPlaceholderWrapper = styled.div`
   ${atBreakpoint(ds.breakpoints.md, css`
-    margin-top: 52px;
+    padding-top: 52px;
   `)}
 `;
 

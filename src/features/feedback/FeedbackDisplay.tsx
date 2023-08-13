@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react";
 import styled, { css } from "styled-components";
 import { Pagination } from "../../components/Pagination";
-import { HiddenUntil, atBreakpoint } from "../style/breakpoints";
+import { HiddenUntil, atBreakpoint, bpUtilityClasses } from "../style/breakpoints";
 import { ds } from "../style/designSystem";
 import { ClientFeedbackPost } from "./entities/ClientFeedbackPost";
 import { FeedbackList } from "./FeedbackList";
@@ -57,16 +57,15 @@ export function FeedbackDisplay(props: FeedbackListControlsProps) {
   return (
     <FeedbackDisplayWrapper>
       <PaginationWrapper>
-        <HiddenUntil bp={ds.breakpoints.md}>
-          {props.totalItems > props.perPage && (
-            <Pagination
-              page={props.page}
-              perPage={props.perPage}
-              totalItems={props.totalItems}
-              otherQueryParams={props.otherQueryParams}
-            />
-          )}
-        </HiddenUntil>
+        {props.totalItems > props.perPage && (
+          <Pagination
+            page={props.page}
+            perPage={props.perPage}
+            totalItems={props.totalItems}
+            otherQueryParams={props.otherQueryParams}
+            className={bpUtilityClasses.hiddenUntil.md}
+          />
+        )}
       </PaginationWrapper>
 
       {(() => {
