@@ -9,29 +9,19 @@ type RemoveIndex<T> = {
 
 export class Account implements RemoveIndex<AdapterAccount> {
   id = uuidV4();
-
   userId!: string;
-
   type!: AdapterAccount["type"];
-
   provider!: string;
-
   providerAccountId!: string;
-
   refresh_token?: string;
-
   access_token?: string;
-
   expires_at?: number;
-
   token_type?: string;
-
   scope?: string;
-
   id_token?: string;
-
   session_state?: string;
 
+  // Relations
   user?: User;
 }
 
@@ -52,6 +42,7 @@ export const AccountSchema = new EntitySchema<Account>({
     id_token: { type: String, nullable: true },
     session_state: { type: String, nullable: true },
 
-    user: { reference: "m:1", entity: () => User, nullable: true },
+    // Relations
+    user: { reference: "m:1", entity: () => User },
   },
 });

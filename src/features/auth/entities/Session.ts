@@ -5,13 +5,11 @@ import { AdapterSession } from "@auth/core/adapters";
 
 export class Session implements AdapterSession {
   id = uuidV4();
-
   userId!: string;
-
   expires!: Date;
-
   sessionToken!: string;
 
+  // Relations
   user?: User;
 }
 
@@ -24,6 +22,7 @@ export const SessionSchema = new EntitySchema<Session>({
     expires: { type: Date },
     sessionToken: { type: String, fieldName: "session_token" },
 
-    user: { reference: "m:1", entity: () => User, nullable: true },
+    // Relations
+    user: { reference: "m:1", entity: () => User },
   },
 });

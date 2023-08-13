@@ -1,8 +1,7 @@
-import NextLink from "next/link";
-import { range } from "../utils";
 import { ReactElement } from "react";
-import { Button, NextLinkButton } from "./Button";
 import styled from "styled-components";
+import { range } from "../utils";
+import { NextLinkButton } from "./Button";
 
 const PageList = styled.div`
   display: flex;
@@ -13,12 +12,17 @@ type PaginationLinkProps = {
   pageParam: string;
   page: number;
   isActive: boolean;
+  otherQueryParams?: Record<string, any>;
 };
 
 function PaginationLink(props: PaginationLinkProps) {
+  const query = {
+    ...props.otherQueryParams,
+    [props.pageParam]: props.page,
+  };
   return (
     <NextLinkButton
-      href={{ query: { [props.pageParam]: props.page } }}
+      href={{ query }}
       $variant={props.isActive ? "secondary" : "basic"}
       $size="small"
     >
@@ -42,6 +46,7 @@ type PaginationProps = {
   page: number;
   perPage: number;
   totalItems: number;
+  otherQueryParams?: Record<string, any>;
 };
 
 export function Pagination(props: PaginationProps): ReactElement {
@@ -62,6 +67,11 @@ export function Pagination(props: PaginationProps): ReactElement {
     startPage -= 1;
   }
 
+  const otherQueryParams = {
+    ...props.otherQueryParams,
+    perPage: props.perPage,
+  };
+
   return (
     <PageList>
       {startPage > 1 && (
@@ -70,6 +80,7 @@ export function Pagination(props: PaginationProps): ReactElement {
             pageParam={pageParam}
             page={1}
             isActive={props.page === 1}
+            otherQueryParams={otherQueryParams}
           />
           {startPage > 2 && (
             <PaginationSeparator />
@@ -82,6 +93,7 @@ export function Pagination(props: PaginationProps): ReactElement {
           pageParam={pageParam}
           page={pageNum}
           isActive={props.page === pageNum}
+          otherQueryParams={otherQueryParams}
         />
       ))}
       {endPage < totalPages && (
@@ -93,6 +105,7 @@ export function Pagination(props: PaginationProps): ReactElement {
             pageParam={pageParam}
             page={totalPages}
             isActive={props.page === totalPages}
+            otherQueryParams={otherQueryParams}
           />
         </>
       )}

@@ -30,4 +30,7 @@ export const mikroOrmOptions: Options<PostgreSqlDriver> = {
   },
 };
 
-export const orm = await MikroORM.init<PostgreSqlDriver>(mikroOrmOptions);
+let ormPromise = MikroORM.init<PostgreSqlDriver>(mikroOrmOptions);
+export function getOrm() {
+  return ormPromise;
+}

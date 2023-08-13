@@ -1,10 +1,11 @@
 import type { Adapter } from "@auth/core/adapters";
-import { orm } from "../../orm";
-import { wrap } from "@mikro-orm/core";
+import { getOrm } from "../../orm";
+import { Collection, wrap } from "@mikro-orm/core";
 import { User } from "./entities/User";
 import { Account } from "./entities/Account";
 import { Session } from "./entities/Session";
 import { VerificationToken } from "./entities/VerificationToken";
+import { defaultRole } from "./roles";
 
 // Heavily based on @auth/mikro-orm-adapter
 // We made our own so we can:
@@ -12,27 +13,30 @@ import { VerificationToken } from "./entities/VerificationToken";
 // 2. Use our own, already-existing ORM instance
 export const customNextAuthAdapter: Adapter = {
   async createUser(data) {
-    const em = orm.em.fork();
-    const user = em.create(User, data);
+    const em = (await getOrm()).em.fork();
+    const user = em.create(User, {
+      ...data,
+      role: defaultRole,
+    });
     await em.persistAndFlush(user);
 
     return wrap(user).toObject();
   },
 
   async getUser(id) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const user = await em.findOne(User, { id });
     return user ? wrap(user).toObject() : null;
   },
 
   async getUserByEmail(email) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const user = await em.findOne(User, { email });
     return user ? wrap(user).toObject() : null;
   },
 
   async getUserByAccount({ provider, providerAccountId }) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const account = await em.findOne(Account, {
       provider,
       providerAccountId,
@@ -43,7 +47,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async updateUser(data) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const user = await em.findOne(User, { id: data.id });
     if (! user) {
       throw new Error("User not found");
@@ -55,7 +59,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async deleteUser(id) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const user = await em.findOne(User, { id });
     if (user) {
       await em.removeAndFlush(user);
@@ -63,19 +67,20 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async linkAccount(data) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const user = await em.findOne(User, { id: data.userId });
     if (! user) {
       throw new Error("User not found");
     }
 
     const account = em.create(Account, data);
+    user.accounts = new Collection<Account>(user);
     user.accounts.add(account);
     await em.persistAndFlush(user);
   },
 
   async unlinkAccount({ provider, providerAccountId }) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const account = await em.findOne(Account, {
       provider,
       providerAccountId,
@@ -88,7 +93,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async getSessionAndUser(sessionToken) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const session = await em.findOne(Session, { sessionToken }, { populate: ["user"] });
     if (! session?.user) {
       return null;
@@ -101,7 +106,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async createSession(data) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const user = await em.findOne(User, { id: data.userId });
     if (! user) {
       throw new Error("User not found");
@@ -109,6 +114,7 @@ export const customNextAuthAdapter: Adapter = {
 
     const session = em.create(Session, data);
     wrap(session).assign(data);
+    user.sessions = new Collection<Session>(user);
     user.sessions.add(session);
     await em.persistAndFlush(session);
 
@@ -116,7 +122,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async updateSession(data) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const session = await em.findOne(Session, { sessionToken: data.sessionToken });
     if (! session) {
       throw new Error("Session not found");
@@ -128,7 +134,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async deleteSession(sessionToken) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const session = await em.findOne(Session, { sessionToken: sessionToken });
     if (session) {
       await em.removeAndFlush(session);
@@ -136,7 +142,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async createVerificationToken(data) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const token = em.create(VerificationToken, data);
     wrap(token).assign(data);
     await em.persistAndFlush(token);
@@ -145,7 +151,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async useVerificationToken(params) {
-    const em = orm.em.fork();
+    const em = (await getOrm()).em.fork();
     const token = await em.findOne(VerificationToken, params);
     if (! token) {
       return null;

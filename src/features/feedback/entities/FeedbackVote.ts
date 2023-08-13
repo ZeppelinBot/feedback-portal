@@ -1,30 +1,28 @@
 import { EntitySchema } from "@mikro-orm/core";
 import { User } from "../../auth/entities/User";
-import { FeedbackPost } from "./FeedbackPost";
 import { v4 as uuidV4 } from "uuid";
+import { FeedbackPost } from "./FeedbackPost";
 import { safeSerializer } from "../../../utils/safeSerializer";
 
-export class FeedbackComment {
+export class FeedbackVote {
   id = uuidV4();
-  post_id!: number;
-  body!: string;
   author_id!: string;
-  posted_at!: Date;
+  post_id!: string;
+  voted_at!: Date;
 
   // Relations
   author?: User;
   post?: FeedbackPost;
 }
 
-export const FeedbackCommentSchema = new EntitySchema<FeedbackComment>({
-  class: FeedbackComment,
-  tableName: "feedback_comments",
+export const FeedbackVoteSchema = new EntitySchema<FeedbackVote>({
+  class: FeedbackVote,
+  tableName: "feedback_votes",
   properties: {
-    id: { type: Number, primary: true, autoincrement: true },
-    post_id: { type: Number },
-    body: { type: String },
+    id: { type: String, primary: true },
     author_id: { type: String },
-    posted_at: { type: Date },
+    post_id: { type: String },
+    voted_at: { type: Date },
 
     // Relations
     author: { reference: "m:1", entity: () => User, serializer: safeSerializer },

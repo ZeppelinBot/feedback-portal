@@ -1,0 +1,103 @@
+"use client";
+
+import styled, { css } from "styled-components";
+import { ds } from "../style/designSystem";
+import { inDarkTheme } from "../style/theme";
+import { HiddenUntil, atBreakpoint } from "../style/breakpoints";
+import { SearchAlt } from "@styled-icons/boxicons-regular";
+import { Button } from "../../components/Button";
+import { useRouter } from "next/navigation";
+import { useDebounce } from "@uidotdev/usehooks";
+import { useEffect, useRef, useState } from "react";
+
+const SearchLocation = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+
+  ${atBreakpoint(ds.breakpoints.md, css`
+    justify-content: flex-start;
+    margin-bottom: -36px;
+    z-index: 1;
+    position: absolute;
+  `)}
+`;
+
+const SearchBarWrapper = styled.div`
+  position: relative;
+  width: 300px;
+`;
+
+const SearchBar = styled.input`
+  width: 100%;
+  font: inherit;
+  padding: ${ds.spacing[3]};
+  padding-left: 36px;
+  background: white;
+  border: 1px solid ${ds.colors.gray.dynamic["300"]};
+  border-radius: 24px;
+
+  &::placeholder {
+    color: ${ds.colors.gray.dynamic["500"]};
+  }
+
+  ${inDarkTheme(css`
+    background: ${ds.colors.gray.dark["200"]};
+    border-color: ${ds.colors.gray.dark["400"]};
+
+    &::placeholder {
+      color: ${ds.colors.gray.dynamic["700"]};
+    }
+  `)}
+`;
+
+const SearchIconWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 8px;
+  color: ${ds.colors.gray.dynamic["500"]};
+`;
+
+type FeedbackDisplaySearchProps = {
+  searchTerm: string;
+};
+
+export function FeedbackDisplaySearch(props: FeedbackDisplaySearchProps) {
+  const [searchTerm, setSearchTerm] = useState(props.searchTerm);
+  const router = useRouter();
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  const initialRef = useRef(true);
+  useEffect(() => {
+    if (initialRef.current) {
+      initialRef.current = false;
+      return;
+    }
+
+    router.replace(`?searchTerm=${encodeURIComponent(searchTerm)}`);
+  }, [debouncedSearchTerm]);
+
+  return (
+    <SearchLocation>
+      <SearchBarWrapper>
+        <SearchIconWrapper>
+          <SearchAlt size={24} />
+        </SearchIconWrapper>
+        <SearchBar
+          type="text"
+          value={searchTerm}
+          onChange={(ev) => setSearchTerm(ev.target.value)}
+          placeholder="Search for feedback..."
+        />
+      </SearchBarWrapper>
+      <HiddenUntil bp={ds.breakpoints.md}>
+        <div>
+          <Button $variant="primary">
+            Submit feedback
+          </Button>
+        </div>
+      </HiddenUntil>
+    </SearchLocation>
+  );
+}

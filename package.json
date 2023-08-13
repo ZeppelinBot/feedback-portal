@@ -21,7 +21,9 @@
     "@styled-icons/boxicons-logos": "^10.47.0",
     "@styled-icons/boxicons-regular": "^10.47.0",
     "@styled-icons/boxicons-solid": "^10.47.0",
+    "@uidotdev/usehooks": "^2.1.0",
     "dotenv": "^16.3.1",
+    "humanize-duration": "^3.29.0",
     "next": "^13.4.9",
     "next-auth": "^0.0.0-manual.024ba3e6",
     "pg": "^8.11.2",
@@ -36,6 +38,7 @@
   "type": "module",
   "devDependencies": {
     "@babel/plugin-proposal-class-static-block": "^7.21.0",
+    "@types/humanize-duration": "^3.27.1",
     "@types/node": "20.4.1",
     "@types/react": "18.2.14",
     "@types/uuid": "^9.0.2",

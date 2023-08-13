@@ -4,7 +4,10 @@ const nextConfig = {
     styledComponents: {
       ssr: true,
     },
-  }
+  },
+  experimental: {
+    serverActions: true,
+  },
 };
 
 export default nextConfig;

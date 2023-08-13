@@ -7,11 +7,12 @@ export class Migration20230813150201 extends Migration {
   async up() {
     this.addSql(`
       CREATE TABLE "users" (
-        id TEXT PRIMARY KEY,
+        id UUID PRIMARY KEY,
         name TEXT,
         email TEXT NOT NULL,
         email_verified TIMESTAMP,
         image TEXT,
+        role TEXT,
 
         CONSTRAINT users_email_uq UNIQUE (email)
       );
@@ -19,8 +20,8 @@ export class Migration20230813150201 extends Migration {
 
     this.addSql(`
       CREATE TABLE "sessions" (
-        id TEXT PRIMARY KEY,
-        user_id TEXT,
+        id UUID PRIMARY KEY,
+        user_id UUID,
         expires TIMESTAMP,
         session_token TEXT UNIQUE,
 
@@ -30,8 +31,8 @@ export class Migration20230813150201 extends Migration {
 
     this.addSql(`
       CREATE TABLE "accounts" (
-        id TEXT PRIMARY KEY,
-        user_id TEXT,
+        id UUID PRIMARY KEY,
+        user_id UUID,
         type TEXT,
         provider TEXT,
         provider_account_id TEXT,
@@ -57,6 +58,13 @@ export class Migration20230813150201 extends Migration {
         CONSTRAINT verification_tokens_uq UNIQUE (token, identifier)
       );
     `);
+  }
+
+  async down() {
+    this.addSql(`DROP TABLE IF EXISTS "verification_tokens"`);
+    this.addSql(`DROP TABLE IF EXISTS "accounts"`);
+    this.addSql(`DROP TABLE IF EXISTS "sessions"`);
+    this.addSql(`DROP TABLE IF EXISTS "users"`);
   }
 
 }
