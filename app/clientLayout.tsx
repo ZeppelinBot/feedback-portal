@@ -5,7 +5,6 @@ import { ReactNode } from "react";
 import { BaseStyles } from "../src/features/style/BaseStyles";
 import { MainHeader } from "./MainHeader";
 import { Container } from "../src/components/Container";
-import { VSpacer } from "../src/components/VSpacer";
 import { MobileFooter } from "./MobileFooter";
 
 type ClientLayoutProps = {

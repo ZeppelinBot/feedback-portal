@@ -5,7 +5,7 @@ import React, { ReactElement } from "react";
 import logoUrl from "./logo.png";
 import Image from "next/image";
 import { ds } from "../src/features/style/designSystem";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { atBreakpoint } from "../src/features/style/breakpoints";
@@ -173,11 +173,28 @@ export function MainHeader(): ReactElement {
             </MenuRouterLink>
           </MenuItem>
           <MenuSeparator />
-          <MenuItem>
-            <MenuButtonLink onClick={() => signIn()} $active={false}>
-              Sign in
-            </MenuButtonLink>
-          </MenuItem>
+          {(() => {
+            if (session?.user) {
+              return <>
+                <MenuItem>
+                  @{session.user.name}
+                </MenuItem>
+                <MenuItem>
+                  <MenuButtonLink onClick={() => signOut()} $active={false}>
+                    Log out
+                  </MenuButtonLink>
+                </MenuItem>
+              </>;
+            }
+
+            return (
+              <MenuItem>
+                <MenuButtonLink onClick={() => signIn("discord")} $active={false}>
+                  Sign in
+                </MenuButtonLink>
+              </MenuItem>
+            );
+          })()}
         </MenuList>
       </MenuArea>
     </HeaderWrapper>
