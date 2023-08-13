@@ -11,6 +11,7 @@ export class VerificationToken implements AdapterVerificationToken {
 
 export const VerificationTokenSchema = new EntitySchema<VerificationToken>({
   class: VerificationToken,
+  tableName: "verification_tokens",
   properties: {
     token: { type: String, primary: true },
     expires: { type: Date },

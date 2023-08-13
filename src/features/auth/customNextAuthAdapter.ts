@@ -13,8 +13,7 @@ import { VerificationToken } from "./entities/VerificationToken";
 export const customNextAuthAdapter: Adapter = {
   async createUser(data) {
     const em = orm.em.fork();
-    const user = new User();
-    wrap(user).assign(data);
+    const user = em.create(User, data);
     await em.persistAndFlush(user);
 
     return wrap(user).toObject();
@@ -70,8 +69,7 @@ export const customNextAuthAdapter: Adapter = {
       throw new Error("User not found");
     }
 
-    const account = new Account();
-    wrap(account).assign(data);
+    const account = em.create(Account, data);
     user.accounts.add(account);
     await em.persistAndFlush(user);
   },
@@ -109,7 +107,7 @@ export const customNextAuthAdapter: Adapter = {
       throw new Error("User not found");
     }
 
-    const session = new Session();
+    const session = em.create(Session, data);
     wrap(session).assign(data);
     user.sessions.add(session);
     await em.persistAndFlush(session);
@@ -139,7 +137,7 @@ export const customNextAuthAdapter: Adapter = {
 
   async createVerificationToken(data) {
     const em = orm.em.fork();
-    const token = new VerificationToken();
+    const token = em.create(VerificationToken, data);
     wrap(token).assign(data);
     await em.persistAndFlush(token);
 

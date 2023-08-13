@@ -26,15 +26,18 @@ export class Account implements RemoveIndex<AdapterAccount> {
 
   token_type?: string;
 
+  scope?: string;
+
   id_token?: string;
 
   session_state?: string;
 
-  user!: User;
+  user?: User;
 }
 
 export const AccountSchema = new EntitySchema<Account>({
   class: Account,
+  tableName: "accounts",
   properties: {
     id: { type: String, primary: true },
     userId: { type: String, fieldName: "user_id" },
@@ -45,9 +48,10 @@ export const AccountSchema = new EntitySchema<Account>({
     access_token: { type: String, nullable: true },
     expires_at: { type: Number, nullable: true },
     token_type: { type: String, nullable: true },
+    scope: { type: String, nullable: true },
     id_token: { type: String, nullable: true },
     session_state: { type: String, nullable: true },
 
-    user: { reference: "m:1", entity: () => User, mappedBy: (user: User) => user.accounts },
+    user: { reference: "m:1", entity: () => User, nullable: true },
   },
 });

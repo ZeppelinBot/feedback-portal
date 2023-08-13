@@ -15,5 +15,4 @@ const envSchema = z.object({
     : z.string().url(),
 });
 
-console.log('hi?');
 export const env = envSchema.parse(process.env);

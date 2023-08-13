@@ -12,16 +12,18 @@ export class Session implements AdapterSession {
 
   sessionToken!: string;
 
-  user!: User;
+  user?: User;
 }
 
 export const SessionSchema = new EntitySchema<Session>({
   class: Session,
+  tableName: "sessions",
   properties: {
     id: { type: String, primary: true },
     userId: { type: String, fieldName: "user_id" },
     expires: { type: Date },
     sessionToken: { type: String, fieldName: "session_token" },
-    user: { reference: "m:1", entity: () => User, mappedBy: (user: User) => user.sessions },
+
+    user: { reference: "m:1", entity: () => User, nullable: true },
   },
 });
