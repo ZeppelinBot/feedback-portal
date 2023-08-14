@@ -1,7 +1,7 @@
-import { getOrm } from "../../orm";
+import { orm } from "../../orm";
 import { FeedbackDisplay } from "./FeedbackDisplay";
 import { createClientFeedbackPost } from "./entities/ClientFeedbackPost";
-import { FeedbackPost } from "./entities/FeedbackPost";
+import { feedbackPostAuthor, feedbackPostDef } from "./entities/FeedbackPost";
 
 type FeedbackLoaderProps = {
   page: number;
@@ -10,27 +10,25 @@ type FeedbackLoaderProps = {
 };
 
 export async function FeedbackLoader(params: FeedbackLoaderProps) {
-  const em = (await getOrm()).em.fork();
-
   const qb = params.searchTerm
-    ? em.createQueryBuilder(FeedbackPost).where("title ILIKE ?", [`%${params.searchTerm}%`])
-    : em.createQueryBuilder(FeedbackPost);
+    ? orm.qb(feedbackPostDef).whereILike("title", `%${params.searchTerm}%`)
+    : orm.qb(feedbackPostDef);
 
   const totalItems = await qb.clone().count();
   const perPage = Math.max(1, params.perPage);
   const page = Math.max(1, Math.min(params.page, Math.ceil(totalItems / perPage)));
 
-  const serverPosts = await qb.clone()
+  const fullQb = qb.clone()
     .offset((page - 1) * perPage)
     .limit(perPage)
-    .orderBy({
-      num_votes: "DESC",
-    })
+    .orderBy("num_votes", "DESC")
     .select("*");
 
-  const populatedServerPosts = await em.populate(serverPosts, ["author"]);
+  const posts = await orm.getMany(feedbackPostDef, () => fullQb, {
+    author: feedbackPostAuthor()(orm),
+  });
 
-  const clientPosts = populatedServerPosts.map(p => createClientFeedbackPost(p));
+  const clientPosts = posts.map(p => createClientFeedbackPost(p));
 
   const otherQueryParams: Record<string, any> = {};
   if (params.searchTerm) {

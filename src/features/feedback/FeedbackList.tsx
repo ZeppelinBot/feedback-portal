@@ -2,14 +2,14 @@
 
 import { Chat, Time, UpArrowAlt } from "@styled-icons/boxicons-regular";
 import { Chat as SolidChat } from "@styled-icons/boxicons-solid";
+import humanizeDuration from "humanize-duration";
 import NextLink from "next/link";
 import styled, { css } from "styled-components";
+import { shortEnglishHumanizer } from "../../utils/shortEnglishHumanizer";
 import { atBreakpoint, untilBreakpoint } from "../style/breakpoints";
 import { ds } from "../style/designSystem";
-import { OnlyInDarkTheme, OnlyInLightTheme, inDarkTheme, inLightTheme, onlyInDarkThemeClass, onlyInLightThemeClass } from "../style/theme";
+import { inDarkTheme, inLightTheme, onlyInDarkThemeClass, onlyInLightThemeClass } from "../style/theme";
 import type { ClientFeedbackPost } from "./entities/ClientFeedbackPost";
-import humanizeDuration from "humanize-duration";
-import { shortEnglishHumanizer } from "../../utils/shortEnglishHumanizer";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -148,7 +148,7 @@ export function FeedbackList(props: FeedbackListProps) {
     <FeedbackListWrapper>
       {props.posts.map(post => (
         <FeedbackListItem key={post.id}>
-          <FeedbackListLink href="/">
+          <FeedbackListLink href={`/feedback/${post.id}`}>
             <FeedbackTitle>{post.title}</FeedbackTitle>
             <FeedbackAuthor>
               Posted by @{post.author!.name!} {humanize(Date.now() - post.posted_at.getTime())} ago

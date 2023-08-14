@@ -1,163 +1,188 @@
-import type { Adapter } from "@auth/core/adapters";
-import { getOrm } from "../../orm";
-import { Collection, wrap } from "@mikro-orm/core";
-import { User } from "./entities/User";
-import { Account } from "./entities/Account";
-import { Session } from "./entities/Session";
-import { VerificationToken } from "./entities/VerificationToken";
+import type { Adapter, AdapterSession, AdapterUser, VerificationToken as AdapterVerificationToken } from "@auth/core/adapters";
+import { v4 as uuidV4 } from "uuid";
+import { orm } from "../../orm";
+import { accountDef } from "./entities/Account";
+import { Session, sessionDef, sessionUser } from "./entities/Session";
+import { User, userDef } from "./entities/User";
+import { verificationTokenDef } from "./entities/VerificationToken";
 import { defaultRole } from "./roles";
 
-// Heavily based on @auth/mikro-orm-adapter
-// We made our own so we can:
-// 1. Use our own entities that use EntitySchemas rather than decorated entity classes
-// 2. Use our own, already-existing ORM instance
+function userToAdapterUser(user: User): AdapterUser {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    emailVerified: user.email_verified,
+    image: user.image,
+  };
+}
+
+function sessionToAdapterSession(session: Session): AdapterSession {
+  return {
+    userId: session.user_id,
+    expires: session.expires,
+    sessionToken: session.session_token,
+  };
+}
+
 export const customNextAuthAdapter: Adapter = {
-  async createUser(data) {
-    const em = (await getOrm()).em.fork();
-    const user = em.create(User, {
-      ...data,
+  async createUser(data): Promise<AdapterUser> {
+    const user = await orm.create(userDef, {
+      id: uuidV4(),
+      name: data.name,
+      email: data.email,
+      email_verified: data.emailVerified?.toISOString(),
+      image: data.image,
       role: defaultRole,
     });
-    await em.persistAndFlush(user);
 
-    return wrap(user).toObject();
+    return userToAdapterUser(user);
   },
 
   async getUser(id) {
-    const em = (await getOrm()).em.fork();
-    const user = await em.findOne(User, { id });
-    return user ? wrap(user).toObject() : null;
+    const user = await orm.getOne(userDef, qb => qb.where("id", id).first());
+    return user ? userToAdapterUser(user) : null;
   },
 
   async getUserByEmail(email) {
-    const em = (await getOrm()).em.fork();
-    const user = await em.findOne(User, { email });
-    return user ? wrap(user).toObject() : null;
+    const user = await orm.getOne(userDef, qb => qb.where("email", email).first());
+    return user ? userToAdapterUser(user) : null;
   },
 
   async getUserByAccount({ provider, providerAccountId }) {
-    const em = (await getOrm()).em.fork();
-    const account = await em.findOne(Account, {
-      provider,
-      providerAccountId,
-    }, {
-      populate: ["user"],
-    });
-    return account?.user ?? null;
+    const user = await orm.getOne(userDef, qb => qb.where("provider", provider).andWhere("provider_account_id", providerAccountId).first());
+    return user ? userToAdapterUser(user) : null;
   },
 
   async updateUser(data) {
-    const em = (await getOrm()).em.fork();
-    const user = await em.findOne(User, { id: data.id });
+    await orm.qb(userDef)
+      .where("id", data.id)
+      .update({
+        name: data.name,
+        email: data.email,
+        email_verified: data.emailVerified?.toISOString(),
+        image: data.image,
+      });
+
+    const user = await orm.getOne(userDef, qb => qb.where("id", data.id).first());
     if (! user) {
       throw new Error("User not found");
     }
-    wrap(user).assign(data, { mergeObjects: true });
-    await em.persistAndFlush(user);
 
-    return wrap(user).toObject();
+    return userToAdapterUser(user);
   },
 
   async deleteUser(id) {
-    const em = (await getOrm()).em.fork();
-    const user = await em.findOne(User, { id });
-    if (user) {
-      await em.removeAndFlush(user);
-    }
+    await orm.qb(userDef)
+      .where("id", id)
+      .delete();
   },
 
   async linkAccount(data) {
-    const em = (await getOrm()).em.fork();
-    const user = await em.findOne(User, { id: data.userId });
+    const user = await orm.getOne(userDef, qb => qb.where("id", data.userId).first());
     if (! user) {
       throw new Error("User not found");
     }
 
-    const account = em.create(Account, data);
-    user.accounts = new Collection<Account>(user);
-    user.accounts.add(account);
-    await em.persistAndFlush(user);
+    await orm.create(accountDef, {
+      id: uuidV4(),
+      user_id: data.userId,
+      type: data.type,
+      provider: data.provider,
+      provider_account_id: data.providerAccountId,
+      refresh_token: data.refresh_token,
+      access_token: data.access_token,
+      expires_at: data.expires_at,
+      token_type: data.token_type,
+      scope: data.scope,
+      id_token: data.id_token,
+      session_state: data.session_state,
+    });
   },
 
   async unlinkAccount({ provider, providerAccountId }) {
-    const em = (await getOrm()).em.fork();
-    const account = await em.findOne(Account, {
-      provider,
-      providerAccountId,
-    });
+    const account = await orm.getOne(accountDef, qb => qb.where("provider", provider).andWhere("provider_account_id", providerAccountId).first());
     if (! account) {
       throw new Error("Account not found");
     }
 
-    await em.removeAndFlush(account);
+    await orm.qb(accountDef)
+      .where("id", account.id)
+      .delete();
   },
 
   async getSessionAndUser(sessionToken) {
-    const em = (await getOrm()).em.fork();
-    const session = await em.findOne(Session, { sessionToken }, { populate: ["user"] });
+    const session = await orm.getOne(sessionDef, qb => qb.where("session_token", sessionToken).first(), {
+      user: sessionUser()(orm),
+    });
     if (! session?.user) {
       return null;
     }
 
     return {
-      session: wrap(session).toObject(),
-      user: wrap(session.user).toObject(),
+      session: sessionToAdapterSession(session),
+      user: userToAdapterUser(session.user),
     };
   },
 
   async createSession(data) {
-    const em = (await getOrm()).em.fork();
-    const user = await em.findOne(User, { id: data.userId });
+    const user = await orm.getOne(userDef, qb => qb.where("id", data.userId).first());
     if (! user) {
       throw new Error("User not found");
     }
 
-    const session = em.create(Session, data);
-    wrap(session).assign(data);
-    user.sessions = new Collection<Session>(user);
-    user.sessions.add(session);
-    await em.persistAndFlush(session);
+    const session = await orm.create(sessionDef, {
+      id: uuidV4(),
+      user_id: data.userId,
+      expires: data.expires.toISOString(),
+      session_token: data.sessionToken,
+    });
 
-    return wrap(session).toObject();
+    return sessionToAdapterSession(session);
   },
 
   async updateSession(data) {
-    const em = (await getOrm()).em.fork();
-    const session = await em.findOne(Session, { sessionToken: data.sessionToken });
+    await orm.qb(sessionDef)
+      .where("session_token", data.sessionToken)
+      .update({
+        user_id: data.userId,
+        expires: data.expires?.toISOString(),
+      });
+
+    const session = await orm.getOne(sessionDef, qb => qb.where("session_token", data.sessionToken).first());
     if (! session) {
       throw new Error("Session not found");
     }
-    wrap(session).assign(data);
-    await em.persistAndFlush(session);
 
-    return wrap(session).toObject();
+    return sessionToAdapterSession(session);
   },
 
   async deleteSession(sessionToken) {
-    const em = (await getOrm()).em.fork();
-    const session = await em.findOne(Session, { sessionToken: sessionToken });
-    if (session) {
-      await em.removeAndFlush(session);
-    }
+    await orm.qb(sessionDef)
+      .where("session_token", sessionToken)
+      .delete();
   },
 
-  async createVerificationToken(data) {
-    const em = (await getOrm()).em.fork();
-    const token = em.create(VerificationToken, data);
-    wrap(token).assign(data);
-    await em.persistAndFlush(token);
+  async createVerificationToken(data): Promise<AdapterVerificationToken> {
+    const token = await orm.create(verificationTokenDef, {
+      token: data.token,
+      expires: data.expires.toISOString(),
+      identifier: data.identifier,
+    });
 
-    return wrap(token).toObject();
+    return token;
   },
 
-  async useVerificationToken(params) {
-    const em = (await getOrm()).em.fork();
-    const token = await em.findOne(VerificationToken, params);
+  async useVerificationToken(params): Promise<AdapterVerificationToken | null> {
+    const token = await orm.getOne(verificationTokenDef, qb => qb.where("token", params.token).andWhere("identifier", params.identifier));
     if (! token) {
       return null;
     }
 
-    await em.removeAndFlush(token);
-    return wrap(token).toObject();
+    await orm.qb(verificationTokenDef)
+      .where("id", token.token)
+      .delete();
+
+    return token;
   },
 };

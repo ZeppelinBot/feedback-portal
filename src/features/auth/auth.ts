@@ -1,9 +1,17 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { REST } from "@discordjs/rest";
 import { Routes, RESTGetCurrentUserGuildMemberResult } from "@discordjs/core/http-only";
 import { env } from "@src/env";
 import { customNextAuthAdapter } from "@src/features/auth/customNextAuthAdapter";
+
+declare module "next-auth" {
+  export interface Session {
+    user: {
+      id: string;
+    } & DefaultSession["user"];
+  }
+}
 
 export const nextAuth = NextAuth({
   adapter: customNextAuthAdapter,
@@ -28,6 +36,15 @@ export const nextAuth = NextAuth({
       }
 
       return true;
+    },
+    async session({ session, user }) {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+        },
+      };
     },
   },
 });

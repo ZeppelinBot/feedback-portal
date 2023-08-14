@@ -1,11 +1,9 @@
-import { Collection } from "@mikro-orm/core";
 import { ZodTypeDef, z } from "zod";
-import { ClientFeedbackPost, createClientFeedbackPost } from "../../feedback/entities/ClientFeedbackPost";
-import { FeedbackComment } from "../../feedback/entities/FeedbackComment";
-import { FeedbackPost } from "../../feedback/entities/FeedbackPost";
-import type { User } from "./User";
-import { zMappedCollection } from "../../../utils/zMappedCollection";
 import { ClientFeedbackComment, createClientFeedbackComment } from "../../feedback/entities/ClientFeedbackComment";
+import { ClientFeedbackPost, createClientFeedbackPost } from "../../feedback/entities/ClientFeedbackPost";
+import { FeedbackComment, zFeedbackComment } from "../../feedback/entities/FeedbackComment";
+import { FeedbackPost, zFeedbackPost } from "../../feedback/entities/FeedbackPost";
+import type { User } from "./User";
 
 const zBaseClientUser = z.object({
   id: z.string(),
@@ -18,8 +16,8 @@ const zBaseClientUser = z.object({
 // Both feedback posts and feedback comments reference back to the user
 
 type ClientUserInput = z.input<typeof zBaseClientUser> & {
-  feedbackPosts?: Collection<FeedbackPost>;
-  feedbackComments?: Collection<FeedbackComment>;
+  feedbackPosts?: FeedbackPost[];
+  feedbackComments?: FeedbackComment[];
 };
 
 export type ClientUser = z.output<typeof zBaseClientUser> & {
@@ -29,10 +27,10 @@ export type ClientUser = z.output<typeof zBaseClientUser> & {
 
 const zClientUser: z.ZodType<ClientUser, ZodTypeDef, ClientUserInput> = zBaseClientUser.extend({
   feedbackPosts: z.lazy(
-    () => zMappedCollection((v) => createClientFeedbackPost(v)).optional()
+    () => z.array(z.any()).transform(arr => arr.map(p => createClientFeedbackPost(p))).optional()
   ),
   feedbackComments: z.lazy(
-    () => zMappedCollection((v) => createClientFeedbackComment(v)).optional()
+    () => z.array(z.any()).transform(arr => arr.map(p => createClientFeedbackComment(p))).optional()
   ),
 });
 

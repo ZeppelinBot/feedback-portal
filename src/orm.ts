@@ -1,36 +1,16 @@
-import { MikroORM, Options } from "@mikro-orm/core";
-import type { PostgreSqlDriver } from "@mikro-orm/postgresql";
+import { KnexOrm } from "@snadi/knex";
+import * as knexPkg from "knex";
 import { env } from "./env";
-import { FeedbackPostSchema } from "./features/feedback/entities/FeedbackPost";
-import { FeedbackCommentSchema } from "./features/feedback/entities/FeedbackComment";
-import { UserSchema } from "./features/auth/entities/User";
-import { AccountSchema } from "./features/auth/entities/Account";
-import { SessionSchema } from "./features/auth/entities/Session";
-import { VerificationTokenSchema } from "./features/auth/entities/VerificationToken";
 
-export const mikroOrmOptions: Options<PostgreSqlDriver> = {
-  entities: [
-    UserSchema,
-    AccountSchema,
-    SessionSchema,
-    VerificationTokenSchema,
-
-    FeedbackPostSchema,
-    FeedbackCommentSchema,
-  ],
-  type: "postgresql",
-  host: "postgres",
-  dbName: "postgres",
-  user: "postgres",
-  password: env.POSTGRES_PASSWORD,
-
-  discovery: {
-    requireEntitiesArray: true,
-    alwaysAnalyseProperties: false,
+export const knex = knexPkg.default({
+  client: "pg",
+  connection: {
+    host: "postgres",
+    port: 5432,
+    user: "postgres",
+    database: "postgres",
+    password: env.POSTGRES_PASSWORD,
   },
-};
+});
 
-let ormPromise = MikroORM.init<PostgreSqlDriver>(mikroOrmOptions);
-export function getOrm() {
-  return ormPromise;
-}
+export const orm = new KnexOrm(knex);

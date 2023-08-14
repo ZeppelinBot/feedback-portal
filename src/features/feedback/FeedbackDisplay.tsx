@@ -1,12 +1,11 @@
 "use client";
 
-import { ReactNode, useState } from "react";
 import styled, { css } from "styled-components";
 import { Pagination } from "../../components/Pagination";
-import { HiddenUntil, atBreakpoint, bpUtilityClasses } from "../style/breakpoints";
+import { atBreakpoint, bpUtilityClasses } from "../style/breakpoints";
 import { ds } from "../style/designSystem";
-import { ClientFeedbackPost } from "./entities/ClientFeedbackPost";
 import { FeedbackList } from "./FeedbackList";
+import { ClientFeedbackPost } from "./entities/ClientFeedbackPost";
 
 const FeedbackDisplayWrapper = styled.div`
   display: flex;

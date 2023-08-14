@@ -1,28 +1,20 @@
-import { EntitySchema, Ref } from "@mikro-orm/core";
-import { v4 as uuidV4 } from "uuid";
-import { User } from "./User";
-import { AdapterSession } from "@auth/core/adapters";
+import { KnexEntityDefinition, hasOne } from "@snadi/knex";
+import { z } from "zod";
+import { userDef } from "./User";
 
-export class Session implements AdapterSession {
-  id = uuidV4();
-  userId!: string;
-  expires!: Date;
-  sessionToken!: string;
-
-  // Relations
-  user?: User;
-}
-
-export const SessionSchema = new EntitySchema<Session>({
-  class: Session,
-  tableName: "sessions",
-  properties: {
-    id: { type: String, primary: true },
-    userId: { type: String, fieldName: "user_id" },
-    expires: { type: Date },
-    sessionToken: { type: String, fieldName: "session_token" },
-
-    // Relations
-    user: { reference: "m:1", entity: () => User, nullable: true },
-  },
+const zSession = z.object({
+  id: z.string().uuid(),
+  user_id: z.string(),
+  expires: z.coerce.date(),
+  session_token: z.string(),
 });
+
+export type Session = z.output<typeof zSession>;
+
+export const sessionDef = {
+  tableName: "sessions",
+  primaryKey: "id",
+  toEntity: (data) => zSession.parse(data),
+} satisfies KnexEntityDefinition;
+
+export const sessionUser = () => hasOne(sessionDef, "user_id", userDef, "id");

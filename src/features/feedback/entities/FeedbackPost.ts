@@ -1,45 +1,25 @@
-import { Collection, EntitySchema, wrap } from "@mikro-orm/core";
-import { User, UserSchema } from "../../auth/entities/User";
-import { FeedbackComment } from "./FeedbackComment";
-import { v4 as uuidV4 } from "uuid";
-import { safeSerializer } from "../../../utils/safeSerializer";
+import { KnexEntityDefinition, hasMany, hasOne } from "@snadi/knex";
+import { z } from "zod";
+import { userDef } from "../../auth/entities/User";
+import { feedbackCommentDef } from "./FeedbackComment";
 
-export class FeedbackPost {
-  id = uuidV4();
-  title!: string;
-  body!: string;
-  author_id!: string;
-  posted_at!: Date;
-  num_votes!: number;
-  num_comments!: number;
-
-  // Relations
-  author?: User;
-  comments?: Collection<FeedbackComment>;
-}
-
-export const FeedbackPostSchema = new EntitySchema<FeedbackPost>({
-  class: FeedbackPost,
-  tableName: "feedback_posts",
-  properties: {
-    id: { type: String, primary: true },
-    title: { type: String },
-    body: { type: String },
-    author_id: { type: String },
-    posted_at: { type: Date },
-    num_votes: { type: Number },
-    num_comments: { type: Number },
-
-    // Relations
-    author: {
-      reference: "m:1",
-      entity: () => UserSchema,
-      serializer: safeSerializer,
-    },
-    comments: {
-      reference: "1:m",
-      entity: () => FeedbackComment,
-      inversedBy: (comment: FeedbackComment) => comment.post,
-    },
-  },
+export const zFeedbackPost = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  body: z.string(),
+  author_id: z.string(),
+  posted_at: z.coerce.date(),
+  num_votes: z.number(),
+  num_comments: z.number(),
 });
+
+export type FeedbackPost = z.output<typeof zFeedbackPost>;
+
+export const feedbackPostDef = {
+  tableName: "feedback_posts",
+  primaryKey: "id",
+  toEntity: (data) => zFeedbackPost.parse(data),
+} satisfies KnexEntityDefinition;
+
+export const feedbackPostAuthor = () => hasOne(feedbackPostDef, "author_id", userDef, "id");
+export const feedbackPostComments = () => hasMany(feedbackPostDef, "id", feedbackCommentDef, "post_id");

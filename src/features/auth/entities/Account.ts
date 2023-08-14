@@ -1,48 +1,32 @@
-import { EntitySchema, Ref } from "@mikro-orm/core";
-import { v4 as uuidV4 } from "uuid";
-import { User } from "./User";
-import { AdapterAccount } from "@auth/core/adapters";
+import { KnexEntityDefinition, hasOne } from "@snadi/knex";
+import { z } from "zod";
+import { userDef } from "./User";
 
 type RemoveIndex<T> = {
   [K in keyof T as {} extends Record<K, 1> ? never : K]: T[K];
 }
 
-export class Account implements RemoveIndex<AdapterAccount> {
-  id = uuidV4();
-  userId!: string;
-  type!: AdapterAccount["type"];
-  provider!: string;
-  providerAccountId!: string;
-  refresh_token?: string;
-  access_token?: string;
-  expires_at?: number;
-  token_type?: string;
-  scope?: string;
-  id_token?: string;
-  session_state?: string;
-
-  // Relations
-  user?: User;
-}
-
-export const AccountSchema = new EntitySchema<Account>({
-  class: Account,
-  tableName: "accounts",
-  properties: {
-    id: { type: String, primary: true },
-    userId: { type: String, fieldName: "user_id" },
-    type: { type: String },
-    provider: { type: String },
-    providerAccountId: { type: String, fieldName: "provider_account_id" },
-    refresh_token: { type: String, nullable: true },
-    access_token: { type: String, nullable: true },
-    expires_at: { type: Number, nullable: true },
-    token_type: { type: String, nullable: true },
-    scope: { type: String, nullable: true },
-    id_token: { type: String, nullable: true },
-    session_state: { type: String, nullable: true },
-
-    // Relations
-    user: { reference: "m:1", entity: () => User },
-  },
+const zAccount = z.object({
+  id: z.string().uuid(),
+  user_id: z.string(),
+  type: z.string(),
+  provider: z.string(),
+  provider_account_id: z.string(),
+  refresh_token: z.string().optional(),
+  access_token: z.string().optional(),
+  expires_at: z.number().optional(),
+  token_type: z.string().optional(),
+  scope: z.string().optional(),
+  id_token: z.string().optional(),
+  session_state: z.string().optional(),
 });
+
+export type Account = z.output<typeof zAccount>;
+
+export const accountDef = {
+  tableName: "accounts",
+  primaryKey: "id",
+  toEntity: (data) => zAccount.parse(data),
+} satisfies KnexEntityDefinition;
+
+export const accountUser = () => hasOne(accountDef, "user_id", userDef, "id");

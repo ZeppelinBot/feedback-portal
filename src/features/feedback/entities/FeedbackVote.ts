@@ -1,31 +1,22 @@
-import { EntitySchema } from "@mikro-orm/core";
-import { User } from "../../auth/entities/User";
-import { v4 as uuidV4 } from "uuid";
-import { FeedbackPost } from "./FeedbackPost";
-import { safeSerializer } from "../../../utils/safeSerializer";
+import { KnexEntityDefinition, hasOne } from "@snadi/knex";
+import { z } from "zod";
+import { userDef } from "../../auth/entities/User";
+import { feedbackPostDef } from "./FeedbackPost";
 
-export class FeedbackVote {
-  id = uuidV4();
-  author_id!: string;
-  post_id!: string;
-  voted_at!: Date;
-
-  // Relations
-  author?: User;
-  post?: FeedbackPost;
-}
-
-export const FeedbackVoteSchema = new EntitySchema<FeedbackVote>({
-  class: FeedbackVote,
-  tableName: "feedback_votes",
-  properties: {
-    id: { type: String, primary: true },
-    author_id: { type: String },
-    post_id: { type: String },
-    voted_at: { type: Date },
-
-    // Relations
-    author: { reference: "m:1", entity: () => User, serializer: safeSerializer },
-    post: { reference: "m:1", entity: () => FeedbackPost, serializer: safeSerializer },
-  },
+export const zFeedbackVote = z.object({
+  id: z.string().uuid(),
+  author_id: z.string(),
+  post_id: z.string(),
+  voted_at: z.coerce.date(),
 });
+
+export type FeedbackVote = z.output<typeof zFeedbackVote>;
+
+export const feedbackVoteDef = {
+  tableName: "feedback_votes",
+  primaryKey: "id",
+  toEntity: (data) => zFeedbackVote.parse(data),
+} satisfies KnexEntityDefinition;
+
+export const feedbackVoteAuthor = () => hasOne(feedbackVoteDef, "author_id", userDef, "id");
+export const feedbackVotePost = () => hasOne(feedbackVoteDef, "post_id", feedbackPostDef, "id");

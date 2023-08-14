@@ -10,7 +10,7 @@ const envSchema = z.object({
 
   // This isn't actually used from the env object directly, but it's included here for validation
   // Required in prod
-  NEXTAUTH_URL: process.env.NODE_ENV === "development"
+  NEXTAUTH_URL: process.env.NODE_ENV === "development" || true
     ? z.string().url().optional()
     : z.string().url(),
 });

@@ -12,7 +12,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <head>
-        <title>Zeppelin Feedback Portal</title>
       </head>
       <body>
         <StyledComponentsRegistry>

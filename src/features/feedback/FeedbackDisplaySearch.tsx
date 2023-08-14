@@ -3,7 +3,7 @@
 import styled, { css } from "styled-components";
 import { ds } from "../style/designSystem";
 import { inDarkTheme } from "../style/theme";
-import { HiddenUntil, atBreakpoint, bpUtilityClasses } from "../style/breakpoints";
+import { atBreakpoint, bpUtilityClasses } from "../style/breakpoints";
 import { SearchAlt } from "@styled-icons/boxicons-regular";
 import { Button } from "../../components/Button";
 import { useRouter } from "next/navigation";

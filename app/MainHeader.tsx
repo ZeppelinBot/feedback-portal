@@ -6,6 +6,6 @@ export const dynamic = "force-dynamic";
 export async function MainHeader() {
   const session = await auth();
   return (
-    <MainHeaderClient session={session} />
+    <MainHeaderClient user={session?.user} />
   );
 }

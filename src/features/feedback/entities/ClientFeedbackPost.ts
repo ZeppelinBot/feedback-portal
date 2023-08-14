@@ -1,10 +1,9 @@
 import { ZodTypeDef, z } from "zod";
 import { createClientUser } from "../../auth/entities/ClientUser";
-import { FeedbackPost } from "./FeedbackPost";
-import { zMappedCollection } from "../../../utils/zMappedCollection";
+import { zUser } from "../../auth/entities/User";
 import { ClientFeedbackComment, createClientFeedbackComment } from "./ClientFeedbackComment";
-import { Collection } from "@mikro-orm/core";
-import { FeedbackComment } from "./FeedbackComment";
+import { FeedbackComment, zFeedbackComment } from "./FeedbackComment";
+import { FeedbackPost } from "./FeedbackPost";
 
 export const zBaseClientFeedbackPost = z.object({
   id: z.string(),
@@ -15,13 +14,13 @@ export const zBaseClientFeedbackPost = z.object({
   num_votes: z.number(),
   num_comments: z.number(),
 
-  author: z.any().transform(createClientUser).optional(),
+  author: z.any().transform(u => createClientUser(u)).optional(),
 });
 
 // Recursive type stuff: https://github.com/colinhacks/zod#recursive-types
 
 type ClientFeedbackPostInput = z.input<typeof zBaseClientFeedbackPost> & {
-  comments?: Collection<FeedbackComment>;
+  comments?: FeedbackComment[];
 };
 
 export type ClientFeedbackPost = z.output<typeof zBaseClientFeedbackPost> & {
@@ -29,7 +28,9 @@ export type ClientFeedbackPost = z.output<typeof zBaseClientFeedbackPost> & {
 };
 
 const zClientFeedbackPost: z.ZodType<ClientFeedbackPost, ZodTypeDef, ClientFeedbackPostInput> = zBaseClientFeedbackPost.extend({
-  comments: z.lazy(() => zMappedCollection((v) => createClientFeedbackComment(v)).optional()),
+  comments: z.lazy(() => z.array(z.any()).transform(arr => arr.map(c => createClientFeedbackComment(c))).optional()),
 });
 
-export const createClientFeedbackPost = (input: FeedbackPost) => zClientFeedbackPost.parse(input);
+export const createClientFeedbackPost = (input: FeedbackPost) => {
+  return zClientFeedbackPost.parse(input);
+};

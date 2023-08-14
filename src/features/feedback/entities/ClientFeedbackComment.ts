@@ -9,13 +9,13 @@ export const zClientFeedbackComment = z.object({
   body: z.string(),
   author_id: z.string(),
   posted_at: z.date(),
-  num_votes: z.number(),
-  num_comments: z.number(),
 
-  author: z.any().transform((v) => createClientUser(v)).optional(),
-  post: z.any().transform((v) => createClientFeedbackPost(v)).optional(),
+  author: z.any().transform(u => createClientUser(u)).optional(),
+  post: z.any().transform(p => createClientFeedbackPost(p)).optional(),
 });
 
 export type ClientFeedbackComment = z.output<typeof zClientFeedbackComment>;
 
-export const createClientFeedbackComment = (input: FeedbackComment) => zClientFeedbackComment.parse(input);
+export const createClientFeedbackComment = (input: FeedbackComment) => {
+  return zClientFeedbackComment.parse(input);
+};

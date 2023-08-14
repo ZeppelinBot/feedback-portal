@@ -141,7 +141,7 @@ const MenuButtonLink = styled.button<MenuLinkProps>`
 `;
 
 type MainHeaderClientProps = {
-  session?: Session;
+  user?: Session["user"];
 };
 
 export function MainHeaderClient(props: MainHeaderClientProps): ReactElement {
@@ -178,10 +178,10 @@ export function MainHeaderClient(props: MainHeaderClientProps): ReactElement {
           </MenuItem>
           <MenuSeparator />
           {(() => {
-            if (props.session?.user) {
+            if (props.user) {
               return <>
                 <MenuItem>
-                  @{props.session.user.name}
+                  @{props.user.name}
                 </MenuItem>
                 <MenuItem>
                   <MenuButtonLink onClick={() => signOut()} $active={false}>
