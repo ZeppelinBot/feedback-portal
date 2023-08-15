@@ -12,13 +12,13 @@ const zAccount = z.object({
   type: z.string(),
   provider: z.string(),
   provider_account_id: z.string(),
-  refresh_token: z.string().optional(),
-  access_token: z.string().optional(),
-  expires_at: z.number().optional(),
-  token_type: z.string().optional(),
-  scope: z.string().optional(),
-  id_token: z.string().optional(),
-  session_state: z.string().optional(),
+  refresh_token: z.string().nullable(),
+  access_token: z.string().nullable(),
+  expires_at: z.number().nullable(),
+  token_type: z.string().nullable(),
+  scope: z.string().nullable(),
+  id_token: z.string().nullable(),
+  session_state: z.string().nullable(),
 });
 
 export type Account = z.output<typeof zAccount>;

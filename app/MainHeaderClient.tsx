@@ -10,6 +10,8 @@ import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { atBreakpoint } from "../src/features/style/breakpoints";
 import { Session } from "next-auth";
+import { ClientUser, createClientUser } from "../src/features/auth/entities/ClientUser";
+import { Username } from "../src/features/auth/Username";
 
 const HeaderWrapper = styled.header`
   display: flex;
@@ -141,7 +143,7 @@ const MenuButtonLink = styled.button<MenuLinkProps>`
 `;
 
 type MainHeaderClientProps = {
-  user?: Session["user"];
+  user: ClientUser | null;
 };
 
 export function MainHeaderClient(props: MainHeaderClientProps): ReactElement {
@@ -181,7 +183,7 @@ export function MainHeaderClient(props: MainHeaderClientProps): ReactElement {
             if (props.user) {
               return <>
                 <MenuItem>
-                  @{props.user.name}
+                  <Username user={props.user} />
                 </MenuItem>
                 <MenuItem>
                   <MenuButtonLink onClick={() => signOut()} $active={false}>

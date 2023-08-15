@@ -13,6 +13,7 @@ import { VSpacer } from "../../../src/components/VSpacer";
 import { ReactNode } from "react";
 import { Session } from "next-auth";
 import { postComment } from "./postComment";
+import { Username } from "../../../src/features/auth/Username";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -79,6 +80,8 @@ const CommentAuthorName = styled.div`
 
 const CommentBody = styled.div`
   grid-area: body;
+
+  font-size: 15px;
 `;
 
 type ClientPageProps = {
@@ -93,7 +96,7 @@ export function ClientFeedbackPostPage(props: ClientPageProps) {
       <Header>
         <div>
           <H1>{props.post.title}</H1>
-          <Subtitle>Posted by @{props.post.author?.name} on <ClientTime time={postedAt} format={"D MMM YYYY [at] H:mm z"} /></Subtitle>
+          <Subtitle>Posted by <Username user={props.post.author!} /> on <ClientTime time={postedAt} format={"D MMM YYYY [at] H:mm z"} /></Subtitle>
         </div>
         <Actions>
           <Votes>
@@ -131,7 +134,9 @@ export function ClientFeedbackPostPage(props: ClientPageProps) {
                   )}
                 </CommentAvatar>
                 <CommentName>
-                  <CommentAuthorName>{comment.author!.name}</CommentAuthorName>
+                  <CommentAuthorName>
+                    <Username user={comment.author!} />
+                  </CommentAuthorName>
                 </CommentName>
                 <CommentBody>
                   {comment.body}

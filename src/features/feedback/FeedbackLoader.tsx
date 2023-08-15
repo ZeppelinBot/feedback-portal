@@ -14,7 +14,8 @@ export async function FeedbackLoader(params: FeedbackLoaderProps) {
     ? orm.qb(feedbackPostDef).whereILike("title", `%${params.searchTerm}%`)
     : orm.qb(feedbackPostDef);
 
-  const totalItems = await qb.clone().count();
+  const count = await qb.clone().count("id", { as: "totalItems" });
+  const totalItems = count[0].totalItems;
   const perPage = Math.max(1, params.perPage);
   const page = Math.max(1, Math.min(params.page, Math.ceil(totalItems / perPage)));
 

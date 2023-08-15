@@ -1,7 +1,7 @@
 import type { Adapter, AdapterSession, AdapterUser, VerificationToken as AdapterVerificationToken } from "@auth/core/adapters";
 import { v4 as uuidV4 } from "uuid";
 import { orm } from "../../orm";
-import { accountDef } from "./entities/Account";
+import { accountDef, accountUser } from "./entities/Account";
 import { Session, sessionDef, sessionUser } from "./entities/Session";
 import { User, userDef } from "./entities/User";
 import { verificationTokenDef } from "./entities/VerificationToken";
@@ -50,8 +50,10 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async getUserByAccount({ provider, providerAccountId }) {
-    const user = await orm.getOne(userDef, qb => qb.where("provider", provider).andWhere("provider_account_id", providerAccountId).first());
-    return user ? userToAdapterUser(user) : null;
+    const account = await orm.getOne(accountDef, qb => qb.where("provider", provider).andWhere("provider_account_id", providerAccountId).first(), {
+      user: accountUser()(orm),
+    });
+    return account?.user ? userToAdapterUser(account.user) : null;
   },
 
   async updateUser(data) {
