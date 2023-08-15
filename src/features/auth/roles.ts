@@ -1,6 +1,8 @@
-export const roles = {
-  ADMIN: "ADMIN",
-  MEMBER: "MEMBER",
-} as const;
+import { z } from "zod";
 
-export const defaultRole = roles.MEMBER;
+export const roles = z.enum([
+  "ADMIN",
+  "MEMBER",
+]);
+
+export const defaultRole = roles.enum.MEMBER;

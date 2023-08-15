@@ -31,7 +31,7 @@ export const customNextAuthAdapter: Adapter = {
       id: uuidV4(),
       name: data.name,
       email: data.email,
-      email_verified: data.emailVerified?.toISOString(),
+      email_verified: data.emailVerified,
       image: data.image,
       role: defaultRole,
     });
@@ -57,14 +57,16 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async updateUser(data) {
-    await orm.qb(userDef)
-      .where("id", data.id)
-      .update({
+    await orm.update(
+      userDef,
+      qb => qb.where("id", data.id),
+      {
         name: data.name,
         email: data.email,
-        email_verified: data.emailVerified?.toISOString(),
+        email_verified: data.emailVerified,
         image: data.image,
-      });
+      },
+    );
 
     const user = await orm.getOne(userDef, qb => qb.where("id", data.id).first());
     if (! user) {
@@ -75,9 +77,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async deleteUser(id) {
-    await orm.qb(userDef)
-      .where("id", id)
-      .delete();
+    await orm.delete(userDef, qb => qb.where("id", id));
   },
 
   async linkAccount(data) {
@@ -136,7 +136,7 @@ export const customNextAuthAdapter: Adapter = {
     const session = await orm.create(sessionDef, {
       id: uuidV4(),
       user_id: data.userId,
-      expires: data.expires.toISOString(),
+      expires: data.expires,
       session_token: data.sessionToken,
     });
 
@@ -144,12 +144,14 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async updateSession(data) {
-    await orm.qb(sessionDef)
-      .where("session_token", data.sessionToken)
-      .update({
+    await orm.update(
+      sessionDef,
+      qb => qb.where("session_token", data.sessionToken),
+      {
         user_id: data.userId,
-        expires: data.expires?.toISOString(),
-      });
+        expires: data.expires,
+      },
+    );
 
     const session = await orm.getOne(sessionDef, qb => qb.where("session_token", data.sessionToken).first());
     if (! session) {
@@ -160,15 +162,13 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async deleteSession(sessionToken) {
-    await orm.qb(sessionDef)
-      .where("session_token", sessionToken)
-      .delete();
+    await orm.delete(sessionDef, qb => qb.where("session_token", sessionToken));
   },
 
   async createVerificationToken(data): Promise<AdapterVerificationToken> {
     const token = await orm.create(verificationTokenDef, {
       token: data.token,
-      expires: data.expires.toISOString(),
+      expires: data.expires,
       identifier: data.identifier,
     });
 
@@ -181,9 +181,7 @@ export const customNextAuthAdapter: Adapter = {
       return null;
     }
 
-    await orm.qb(verificationTokenDef)
-      .where("id", token.token)
-      .delete();
+    await orm.delete(verificationTokenDef, qb => qb.where("token", token.token));
 
     return token;
   },

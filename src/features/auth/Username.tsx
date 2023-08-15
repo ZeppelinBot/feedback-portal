@@ -1,12 +1,13 @@
 import { styled } from "styled-components";
 import { ClientUser } from "./entities/ClientUser";
 import { roles } from "./roles";
+import { z } from "zod";
 
-type Role = typeof roles[keyof typeof roles];
+type Role = z.infer<typeof roles>;
 
 const roleColors: Record<Role, string> = {
-  [roles.ADMIN]: "rgb(46, 204, 113)",
-  [roles.MEMBER]: "rgb(52, 152, 219)",
+  [roles.enum.ADMIN]: "rgb(46, 204, 113)",
+  [roles.enum.MEMBER]: "rgb(52, 152, 219)",
 };
 
 const StyledUsername = styled.span`
