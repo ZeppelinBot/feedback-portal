@@ -10,6 +10,7 @@ import { atBreakpoint, untilBreakpoint } from "../style/breakpoints";
 import { ds } from "../style/designSystem";
 import { inDarkTheme, inLightTheme, onlyInDarkThemeClass, onlyInLightThemeClass } from "../style/theme";
 import type { ClientFeedbackPost } from "./entities/ClientFeedbackPost";
+import { Username } from "../auth/Username";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -151,7 +152,7 @@ export function FeedbackList(props: FeedbackListProps) {
           <FeedbackListLink href={`/feedback/${post.id}`}>
             <FeedbackTitle>{post.title}</FeedbackTitle>
             <FeedbackAuthor>
-              Posted by @{post.author!.name!} {humanize(Date.now() - post.posted_at.getTime())} ago
+              Posted by <Username user={post.author!} /> {humanize(Date.now() - post.posted_at.getTime())} ago
             </FeedbackAuthor>
             <FeedbackVotes>
               <UpArrowAlt size={24} />
