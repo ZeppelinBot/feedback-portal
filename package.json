@@ -14,7 +14,7 @@
     "@discordjs/core": "^1.0.0",
     "@fontsource-variable/inter": "^5.0.5",
     "@snadi/core": "^0.0.1",
-    "@snadi/knex": "^0.0.2",
+    "@snadi/knex": "^0.0.3",
     "@styled-icons/boxicons-logos": "^10.47.0",
     "@styled-icons/boxicons-regular": "^10.47.0",
     "@styled-icons/boxicons-solid": "^10.47.0",
@@ -40,6 +40,7 @@
     "@types/humanize-duration": "^3.27.1",
     "@types/node": "20.4.1",
     "@types/react": "18.2.14",
+    "@types/react-dom": "^18.2.7",
     "@types/uuid": "^9.0.2",
     "babel-plugin-styled-components": "^2.1.4",
     "typescript": "5.1.6"
