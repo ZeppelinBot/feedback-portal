@@ -4,7 +4,7 @@ import { ReactElement, ReactNode } from "react";
 import { inDarkTheme, inLightTheme } from "../features/style/theme";
 import NextLink from "next/link";
 
-type ButtonProps = {
+export type ButtonProps = {
   $variant?: "basic" | "primary" | "secondary" | "danger" | "rainbow";
   $size?: "small" | "medium" | "large";
 };
@@ -14,7 +14,7 @@ const ButtonIconWrapper = styled.div`
   line-height: 0;
 `;
 
-const buttonStyles = css<ButtonProps>`
+export const buttonStyles = css<ButtonProps>`
   display: inline-flex;
   align-items: center;
   gap: 4px;

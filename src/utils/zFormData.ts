@@ -8,9 +8,9 @@ function formDataToObject(fd: FormData): Record<string, unknown> {
   return result;
 }
 
-export function zFormData(schema: z.ZodType<any>) {
+export function zFormData<Schema extends z.ZodTypeAny>(schema: Schema) {
   return z.instanceof(FormData).transform((fd, ctx) => {
     const converted = formDataToObject(fd);
-    return schema.parse(converted);
+    return schema.parse(converted) as z.output<Schema>;
   });
 }

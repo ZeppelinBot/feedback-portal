@@ -40,17 +40,17 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async getUser(id) {
-    const user = await orm.getOne(userDef, qb => qb.where("id", id).first());
+    const user = await orm.getOne(userDef, qb => qb.where("id", "=", id));
     return user ? userToAdapterUser(user) : null;
   },
 
   async getUserByEmail(email) {
-    const user = await orm.getOne(userDef, qb => qb.where("email", email).first());
+    const user = await orm.getOne(userDef, qb => qb.where("email", "=", email));
     return user ? userToAdapterUser(user) : null;
   },
 
   async getUserByAccount({ provider, providerAccountId }) {
-    const account = await orm.getOne(accountDef, qb => qb.where("provider", provider).andWhere("provider_account_id", providerAccountId).first(), {
+    const account = await orm.getOne(accountDef, qb => qb.where("provider", "=", provider).where("provider_account_id", "=", providerAccountId), {
       user: accountUser()(orm),
     });
     return account?.user ? userToAdapterUser(account.user) : null;
@@ -59,7 +59,7 @@ export const customNextAuthAdapter: Adapter = {
   async updateUser(data) {
     await orm.update(
       userDef,
-      qb => qb.where("id", data.id),
+      qb => qb.where("id", "=", data.id!),
       {
         name: data.name,
         email: data.email,
@@ -68,7 +68,7 @@ export const customNextAuthAdapter: Adapter = {
       },
     );
 
-    const user = await orm.getOne(userDef, qb => qb.where("id", data.id).first());
+    const user = await orm.getOne(userDef, qb => qb.where("id", "=", data.id!));
     if (! user) {
       throw new Error("User not found");
     }
@@ -77,11 +77,11 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async deleteUser(id) {
-    await orm.delete(userDef, qb => qb.where("id", id));
+    await orm.delete(userDef, qb => qb.where("id", "=", id));
   },
 
   async linkAccount(data) {
-    const user = await orm.getOne(userDef, qb => qb.where("id", data.userId).first());
+    const user = await orm.getOne(userDef, qb => qb.where("id", "=", data.userId));
     if (! user) {
       throw new Error("User not found");
     }
@@ -103,7 +103,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async unlinkAccount({ provider, providerAccountId }) {
-    const account = await orm.getOne(accountDef, qb => qb.where("provider", provider).andWhere("provider_account_id", providerAccountId).first());
+    const account = await orm.getOne(accountDef, qb => qb.where("provider", "=", provider).where("provider_account_id", "=", providerAccountId));
     if (! account) {
       throw new Error("Account not found");
     }
@@ -114,7 +114,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async getSessionAndUser(sessionToken) {
-    const session = await orm.getOne(sessionDef, qb => qb.where("session_token", sessionToken).first(), {
+    const session = await orm.getOne(sessionDef, qb => qb.where("session_token", "=", sessionToken), {
       user: sessionUser()(orm),
     });
     if (! session?.user) {
@@ -128,7 +128,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async createSession(data) {
-    const user = await orm.getOne(userDef, qb => qb.where("id", data.userId).first());
+    const user = await orm.getOne(userDef, qb => qb.where("id", "=", data.userId));
     if (! user) {
       throw new Error("User not found");
     }
@@ -146,14 +146,14 @@ export const customNextAuthAdapter: Adapter = {
   async updateSession(data) {
     await orm.update(
       sessionDef,
-      qb => qb.where("session_token", data.sessionToken),
+      qb => qb.where("session_token", "=", data.sessionToken),
       {
         user_id: data.userId,
         expires: data.expires,
       },
     );
 
-    const session = await orm.getOne(sessionDef, qb => qb.where("session_token", data.sessionToken).first());
+    const session = await orm.getOne(sessionDef, qb => qb.where("session_token", "=", data.sessionToken));
     if (! session) {
       throw new Error("Session not found");
     }
@@ -162,7 +162,7 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async deleteSession(sessionToken) {
-    await orm.delete(sessionDef, qb => qb.where("session_token", sessionToken));
+    await orm.delete(sessionDef, qb => qb.where("session_token", "=", sessionToken));
   },
 
   async createVerificationToken(data): Promise<AdapterVerificationToken> {
@@ -176,12 +176,12 @@ export const customNextAuthAdapter: Adapter = {
   },
 
   async useVerificationToken(params): Promise<AdapterVerificationToken | null> {
-    const token = await orm.getOne(verificationTokenDef, qb => qb.where("token", params.token).andWhere("identifier", params.identifier));
+    const token = await orm.getOne(verificationTokenDef, qb => qb.where("token", "=", params.token).where("identifier", "=", params.identifier));
     if (! token) {
       return null;
     }
 
-    await orm.delete(verificationTokenDef, qb => qb.where("token", token.token));
+    await orm.delete(verificationTokenDef, qb => qb.where("token", "=", token.token));
 
     return token;
   },

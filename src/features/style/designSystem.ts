@@ -12,10 +12,14 @@ type GeneratedColors = {
   "900": string;
 };
 
+const colorVar = (name: string, value: string) => {
+  return `var(--color-${name}-${value})`;
+};
+
 const generateColors = (name: string): GeneratedColors => {
   const result: Record<string, string> = {};
   for (const step of range(100, 900, 100)) {
-    result[String(step)] = `var(--color-${name}-${step})`;
+    result[String(step)] = colorVar(name, String(step));
   }
   return result as GeneratedColors;
 };
@@ -28,7 +32,7 @@ export const ds = {
     xl: "1280px",
   },
 
-  maxContentWidth: "1280px",
+  maxContentWidth: "1024px",
 
   spacing: {
     "1": "2px",
@@ -67,7 +71,11 @@ export const ds = {
   // Variables are generated in colors.ts
   colors: {
     gray: {
-      dynamic: generateColors("gray"),
+      dynamic: {
+        ...generateColors("gray"),
+        "0": colorVar("gray", "0"),
+        "1000": colorVar("gray", "1000"),
+      },
       light: generateColors("light-gray"),
       dark: generateColors("dark-gray"),
     },
@@ -85,6 +93,11 @@ export const ds = {
       dynamic: generateColors("red"),
       light: generateColors("light-red"),
       dark: generateColors("dark-red"),
+    },
+    white: {
+      dynamic: "",
+      light: "white",
+      dark: "black",
     },
   },
 } as const;

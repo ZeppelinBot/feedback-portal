@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import { ClientUser } from "./entities/ClientUser";
 import { roles } from "./roles";
 import { z } from "zod";
+import { ClientAnonymousUser } from "./entities/ClientAnonymousUser";
 
 type Role = z.infer<typeof roles>;
 
@@ -15,9 +16,12 @@ const StyledUsername = styled.span`
 `;
 
 type UsernameProps = {
-  user: ClientUser;
+  user: ClientUser | ClientAnonymousUser;
 };
 
 export function Username(props: UsernameProps) {
-  return <StyledUsername style={{ color: roleColors[props.user.role as Role] }}>{props.user.name ?? ""}</StyledUsername>;
+  const style = props.user && "role" in props.user
+    ? { color: roleColors[props.user.role] }
+    : {};
+  return <StyledUsername style={style}>{props.user.name ?? ""}</StyledUsername>;
 }

@@ -1,4 +1,4 @@
-import { KnexEntityDefinition, hasMany, hasOne } from "@snadi/knex";
+import { KyselyEntityDefinition, hasMany, hasOne } from "@snadi/kysely";
 import { z } from "zod";
 import { userDef } from "../../auth/entities/User";
 import { feedbackCommentDef } from "./FeedbackComment";
@@ -18,11 +18,11 @@ export const zToFeedbackPostRow = zToFeedbackPostEntity;
 export type FeedbackPost = z.output<typeof zToFeedbackPostEntity>;
 
 export const feedbackPostDef = {
-  tableName: "feedback_posts",
+  tableName: "feedback_posts" as const,
   primaryKey: "id",
   toEntity: (data: z.input<typeof zToFeedbackPostEntity>) => zToFeedbackPostEntity.parse(data),
   toRow: (data: z.input<typeof zToFeedbackPostRow>) => zToFeedbackPostRow.parse(data),
-} satisfies KnexEntityDefinition;
+} satisfies KyselyEntityDefinition;
 
 export const feedbackPostAuthor = () => hasOne(feedbackPostDef, "author_id", userDef, "id");
 export const feedbackPostComments = () => hasMany(feedbackPostDef, "id", feedbackCommentDef, "post_id");

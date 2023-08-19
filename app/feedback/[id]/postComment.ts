@@ -21,18 +21,36 @@ export async function postComment(rawData: FormData) {
   }
 
   const data = zData.parse(rawData);
-  const post = await orm.getOne(feedbackPostDef, qb => qb.where("id", data.post_id).first());
+  const post = await orm.getOne(feedbackPostDef, qb => qb.where("id", "=", data.post_id));
   if (! post) {
     throw new Error("Unknown post");
   }
 
+  const commentId = uuidV4();
   await orm.create(feedbackCommentDef, {
-    id: uuidV4(),
+    id: commentId,
     post_id: data.post_id,
     body: data.body,
     author_id: session.user.id,
-    posted_at: (new Date()).toISOString(),
+    posted_at: new Date(),
   });
 
-  redirect(`/feedback/${data.post_id}`);
+  await orm.transaction(async (trxOrm) => {
+    const commentCount = await trxOrm.kysely.selectFrom(feedbackCommentDef.tableName)
+      .where("post_id", "=", data.post_id)
+      .select(({ fn }) => [
+        fn.countAll().as("count"),
+      ])
+      .executeTakeFirstOrThrow();
+
+    await trxOrm.update(
+      feedbackPostDef,
+      qb => qb.where("id", "=", post.id),
+      {
+        num_comments: Number(commentCount.count),
+      },
+    );
+  });
+
+  redirect(`/feedback/${data.post_id}#${commentId}`);
 }

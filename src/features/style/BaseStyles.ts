@@ -2,15 +2,13 @@ import { createGlobalStyle, css } from "styled-components";
 import { cssColorVariables } from "./colors";
 import { ds } from "./designSystem";
 import { inDarkTheme, inLightTheme, inRootLightTheme, onlyInDarkThemeClass, onlyInLightThemeClass } from "./theme";
+import { bpUtilityCss } from "./breakpoints";
 
 // Base styles
 export const BaseStyles = createGlobalStyle`
   :root {
     ${cssColorVariables}
-
-    ${inRootLightTheme(css`
-
-    `)}
+    ${bpUtilityCss}
   }
 
   *,

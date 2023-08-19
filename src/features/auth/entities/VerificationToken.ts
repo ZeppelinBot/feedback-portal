@@ -1,4 +1,4 @@
-import { KnexEntityDefinition } from "@snadi/knex";
+import { KyselyEntityDefinition } from "@snadi/kysely";
 import { z } from "zod";
 
 export const zToVerificationTokenEntity = z.object({
@@ -12,8 +12,8 @@ export const zToVerificationTokenRow = zToVerificationTokenEntity;
 export type VerificationToken = z.output<typeof zToVerificationTokenEntity>;
 
 export const verificationTokenDef = {
-  tableName: "verification_tokens",
+  tableName: "verification_tokens" as const,
   primaryKey: "token",
   toEntity: (data: z.input<typeof zToVerificationTokenEntity>) => zToVerificationTokenEntity.parse(data),
   toRow: (data: z.input<typeof zToVerificationTokenRow>) => zToVerificationTokenRow.parse(data),
-} satisfies KnexEntityDefinition;
+} satisfies KyselyEntityDefinition;

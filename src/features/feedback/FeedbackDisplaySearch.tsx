@@ -5,10 +5,11 @@ import { ds } from "../style/designSystem";
 import { inDarkTheme } from "../style/theme";
 import { atBreakpoint, bpUtilityClasses } from "../style/breakpoints";
 import { SearchAlt } from "@styled-icons/boxicons-regular";
-import { Button } from "../../components/Button";
+import { Button, NextLinkButton } from "../../components/Button";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useRef, useState } from "react";
+import { FieldInput } from "../../components/FieldInput";
 
 const SearchLocation = styled.div`
   display: flex;
@@ -33,7 +34,7 @@ const SearchBarWrapper = styled.div`
   width: 300px;
 `;
 
-const SearchBar = styled.input`
+const SearchBar = styled(FieldInput)`
   width: 100%;
   font: inherit;
   padding: ${ds.spacing[3]};
@@ -103,9 +104,7 @@ export function FeedbackDisplaySearch(props: FeedbackDisplaySearchProps) {
         </noscript>
       </SearchForm>
       <div className={bpUtilityClasses.hiddenUntil.md}>
-        <Button $variant="primary">
-          Submit feedback
-        </Button>
+        <NextLinkButton href="/feedback/new" $variant="primary">Submit feedback</NextLinkButton>
       </div>
     </SearchLocation>
   );

@@ -1,4 +1,4 @@
-import { KnexEntityDefinition, hasOne } from "@snadi/knex";
+import { KyselyEntityDefinition, hasOne } from "@snadi/kysely";
 import { z } from "zod";
 import { userDef } from "./User";
 
@@ -35,10 +35,10 @@ const zToAccountRow = z.object({
 export type Account = z.output<typeof zToAccountEntity>;
 
 export const accountDef = {
-  tableName: "accounts",
+  tableName: "accounts" as const,
   primaryKey: "id",
   toEntity: (data: z.input<typeof zToAccountEntity>) => zToAccountEntity.parse(data),
   toRow: (data: z.input<typeof zToAccountRow>) => zToAccountRow.parse(data),
-} satisfies KnexEntityDefinition;
+} satisfies KyselyEntityDefinition;
 
 export const accountUser = () => hasOne(accountDef, "user_id", userDef, "id");

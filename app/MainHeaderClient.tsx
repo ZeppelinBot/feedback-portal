@@ -9,8 +9,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
 import { atBreakpoint } from "../src/features/style/breakpoints";
-import { Session } from "next-auth";
-import { ClientUser, createClientUser } from "../src/features/auth/entities/ClientUser";
+import { ClientUser } from "../src/features/auth/entities/ClientUser";
 import { Username } from "../src/features/auth/Username";
 
 const HeaderWrapper = styled.header`
@@ -158,7 +157,8 @@ export function MainHeaderClient(props: MainHeaderClientProps): ReactElement {
               src={logoUrl}
               alt=""
               fill={true}
-              objectFit="contain"
+              style={{ objectFit: "contain" }}
+              sizes={`(min-width: ${ds.breakpoints.md}) 80px, 40px`}
             />
           </LogoImageWrapper>
           <MainHeading>
@@ -169,13 +169,13 @@ export function MainHeaderClient(props: MainHeaderClientProps): ReactElement {
       <MenuArea>
         <MenuList>
           <MenuItem>
-            <MenuRouterLink href="/" $active={pathname === "/"}>
-              Home
+            <MenuRouterLink href="/" $active={pathname === "/" || pathname.startsWith("/feedback")}>
+              Feedback
             </MenuRouterLink>
           </MenuItem>
           <MenuItem>
-            <MenuRouterLink href="/design" $active={pathname.startsWith("/design")}>
-              Design
+            <MenuRouterLink href="/" $active={pathname.startsWith("/about")}>
+              About
             </MenuRouterLink>
           </MenuItem>
           <MenuSeparator />

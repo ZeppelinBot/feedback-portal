@@ -13,14 +13,19 @@ declare module "next-auth" {
   }
 }
 
+const provider = DiscordProvider({
+  clientId: env.DISCORD_CLIENT_ID,
+  clientSecret: env.DISCORD_CLIENT_SECRET,
+});
+provider.authorization = "https://discord.com/api/oauth2/authorize?scope=identify+guilds.members.read";
+
 export const nextAuth = NextAuth({
   adapter: customNextAuthAdapter,
+  pages: {
+    error: "/errors/auth",
+  },
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
-      authorization: { params: { scope: "identify guilds.members.read" } },
-    }),
+    provider,
   ],
   secret: env.SECRET,
   callbacks: {
@@ -32,6 +37,7 @@ export const nextAuth = NextAuth({
       const rest = new REST({ version: "10", authPrefix: "Bearer" }).setToken(account.access_token);
       const guildMember = await rest.get(Routes.userGuildMember(env.AUTH_GUILD_ID)).catch(() => null) as RESTGetCurrentUserGuildMemberResult | null;
       if (! guildMember || ! guildMember.roles.includes(env.AUTH_ROLE_ID)) {
+        console.log(guildMember?.user?.id, "does not have role", env.AUTH_ROLE_ID, "| all:", guildMember?.roles.join(" "));
         return false;
       }
 

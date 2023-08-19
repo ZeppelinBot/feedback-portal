@@ -1,4 +1,4 @@
-import { KnexEntityDefinition, hasOne } from "@snadi/knex";
+import { KyselyEntityDefinition, hasOne } from "@snadi/kysely";
 import { z } from "zod";
 import { userDef } from "./User";
 
@@ -19,10 +19,10 @@ const zToSessionRow = z.object({
 export type Session = z.output<typeof zToSessionEntity>;
 
 export const sessionDef = {
-  tableName: "sessions",
+  tableName: "sessions" as const,
   primaryKey: "id",
   toEntity: (data: z.input<typeof zToSessionEntity>) => zToSessionEntity.parse(data),
   toRow: (data: z.input<typeof zToSessionRow>) => zToSessionRow.parse(data),
-} satisfies KnexEntityDefinition;
+} satisfies KyselyEntityDefinition;
 
 export const sessionUser = () => hasOne(sessionDef, "user_id", userDef, "id");

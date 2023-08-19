@@ -4,6 +4,10 @@ import { inDarkTheme, inLightTheme, inRootDarkTheme, inRootLightTheme } from "./
 
 const colors = {
   gray: {
+    "0": {
+      light: "white",
+      dark: "black",
+    },
     "100": {
       light: "hsl(213, 50%, 99%)",
       dark: "hsl(213, 8%, 10%)",
@@ -39,6 +43,10 @@ const colors = {
     "900": {
       light: "hsl(213, 8%, 10%)",
       dark: "hsl(213, 50%, 99%)",
+    },
+    "1000": {
+      light: "black",
+      dark: "white",
     },
   },
 

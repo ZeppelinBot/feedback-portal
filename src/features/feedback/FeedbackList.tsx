@@ -70,7 +70,7 @@ const FeedbackListLink = styled(NextLink)`
     grid-template-areas:
       "votes title  comments"
       "votes author comments";
-    grid-template-columns: 80px auto min-content;
+    grid-template-columns: 60px auto min-content;
     gap: 0 16px;
   `)}
 `;
@@ -140,6 +140,7 @@ type FeedbackListProps = {
 
 const humanize = (ms: number) => humanizeDuration(ms, {
   largest: 1,
+  round: true,
 });
 
 const humanizeShort = (ms: number) => shortEnglishHumanizer(ms);
@@ -152,7 +153,7 @@ export function FeedbackList(props: FeedbackListProps) {
           <FeedbackListLink href={`/feedback/${post.id}`}>
             <FeedbackTitle>{post.title}</FeedbackTitle>
             <FeedbackAuthor>
-              Posted by <Username user={post.author!} /> {humanize(Date.now() - post.posted_at.getTime())} ago
+              Posted {humanize(Date.now() - post.posted_at.getTime())} ago
             </FeedbackAuthor>
             <FeedbackVotes>
               <UpArrowAlt size={24} />
