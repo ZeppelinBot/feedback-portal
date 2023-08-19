@@ -14,8 +14,8 @@
   "dependencies": {
     "@discordjs/core": "^1.0.0",
     "@fontsource-variable/inter": "^5.0.5",
-    "@snadi/core": "^0.0.1",
-    "@snadi/kysely": "^0.0.1",
+    "@snadi/core": "^0.0.2",
+    "@snadi/kysely": "^0.0.2",
     "@styled-icons/boxicons-logos": "^10.47.0",
     "@styled-icons/boxicons-regular": "^10.47.0",
     "@styled-icons/boxicons-solid": "^10.47.0",
