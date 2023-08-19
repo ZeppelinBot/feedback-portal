@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "debug": "tsc --noEmit"
+    "debug": "tsc --noEmit",
+    "migrations": "node ./migrations.js"
   },
   "dependencies": {
     "@discordjs/core": "^1.0.0",
