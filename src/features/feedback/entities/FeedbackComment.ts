@@ -2,6 +2,7 @@ import { KyselyEntityDefinition, hasOne } from "@snadi/kysely";
 import { z } from "zod";
 import { userDef } from "../../auth/entities/User";
 import { feedbackPostDef } from "./FeedbackPost";
+import { orm } from "../../../orm";
 
 export const zToFeedbackCommentEntity = z.object({
   id: z.string().uuid(),
@@ -22,5 +23,5 @@ export const feedbackCommentDef = {
   toRow: (data: z.input<typeof zToFeedbackCommentRow>) => zToFeedbackCommentRow.parse(data),
 } satisfies KyselyEntityDefinition;
 
-export const feedbackCommentAuthor = () => hasOne(feedbackCommentDef, "author_id", userDef, "id");
-export const feedbackCommentPost = () => hasOne(feedbackCommentDef, "post_id", feedbackPostDef, "id");
+export const feedbackCommentAuthor = () => hasOne(feedbackCommentDef, "author_id", userDef, "id")(orm);
+export const feedbackCommentPost = () => hasOne(feedbackCommentDef, "post_id", feedbackPostDef, "id")(orm);

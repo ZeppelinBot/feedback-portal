@@ -10,7 +10,7 @@ import { feedbackVoteDef } from "./features/feedback/entities/FeedbackVote";
 import { PostgresDialect, Kysely } from "kysely";
 import { Pool } from "pg";
 
-type KyselyDB = EntitiesToKyselyDatabase<
+export type KyselyDB = EntitiesToKyselyDatabase<
   | typeof accountDef
   | typeof sessionDef
   | typeof userDef

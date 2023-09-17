@@ -2,16 +2,15 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { auth } from "../../../../src/features/auth/auth";
-import { feedbackPosts } from "../../../../src/features/feedback/feedback";
+import { auth } from "../../../src/features/auth/auth";
+import { feedbackPosts } from "../../../src/features/feedback/feedback";
+import { feedbackStatus } from "../../../src/features/feedback/feedbackStatus";
 
 const zData = z.object({
   post_id: z.string().uuid(),
-  title: z.string().min(3).max(255),
-  body: z.string().min(80).max(8_000),
 });
 
-export async function editFeedback(fd: FormData) {
+export async function withdrawPost(fd: FormData) {
   const session = await auth();
   if (! session) {
     throw new Error("Not logged in");
@@ -19,8 +18,6 @@ export async function editFeedback(fd: FormData) {
 
   const data = zData.parse({
     post_id: fd.get("post_id"),
-    title: fd.get("title"),
-    body: fd.get("body"),
   });
 
   const post = await feedbackPosts.getById(data.post_id);
@@ -32,9 +29,12 @@ export async function editFeedback(fd: FormData) {
     throw new Error("Unauthorized");
   }
 
+  if (post.status !== feedbackStatus.Enum.open) {
+    throw new Error("Only posts with the status 'open' can be withdrawn");
+  }
+
   await feedbackPosts.updateById(post.id, {
-    title: data.title,
-    body: data.body,
+    status: feedbackStatus.Enum.withdrawn,
   });
 
   redirect(`/feedback/${post.id}`);

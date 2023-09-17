@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "../../../../src/features/auth/auth";
+import { auth } from "@src/features/auth/auth";
 
 export async function POST() {
   const session = await auth();
@@ -7,3 +7,5 @@ export async function POST() {
     authenticated: !! session,
   });
 }
+
+export const dynamic = "force-dynamic";

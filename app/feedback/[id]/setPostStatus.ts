@@ -2,16 +2,18 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { auth } from "../../../../src/features/auth/auth";
-import { feedbackPosts } from "../../../../src/features/feedback/feedback";
+import { auth } from "../../../src/features/auth/auth";
+import { feedbackPosts } from "../../../src/features/feedback/feedback";
+import { feedbackStatus } from "../../../src/features/feedback/feedbackStatus";
+import { roles } from "../../../src/features/auth/roles";
+import { users } from "../../../src/features/auth/users";
 
 const zData = z.object({
   post_id: z.string().uuid(),
-  title: z.string().min(3).max(255),
-  body: z.string().min(80).max(8_000),
+  status: feedbackStatus,
 });
 
-export async function editFeedback(fd: FormData) {
+export async function setPostStatus(fd: FormData) {
   const session = await auth();
   if (! session) {
     throw new Error("Not logged in");
@@ -19,8 +21,7 @@ export async function editFeedback(fd: FormData) {
 
   const data = zData.parse({
     post_id: fd.get("post_id"),
-    title: fd.get("title"),
-    body: fd.get("body"),
+    status: fd.get("status"),
   });
 
   const post = await feedbackPosts.getById(data.post_id);
@@ -28,13 +29,13 @@ export async function editFeedback(fd: FormData) {
     throw new Error("Post not found");
   }
 
-  if (session.user.id !== post.author_id) {
+  const user = await users.getById(session.user.id);
+  if (user!.role !== roles.Enum.ADMIN) {
     throw new Error("Unauthorized");
   }
 
   await feedbackPosts.updateById(post.id, {
-    title: data.title,
-    body: data.body,
+    status: data.status,
   });
 
   redirect(`/feedback/${post.id}`);

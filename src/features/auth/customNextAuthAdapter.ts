@@ -108,9 +108,7 @@ export const customNextAuthAdapter: Adapter = {
       throw new Error("Account not found");
     }
 
-    await orm.qb(accountDef)
-      .where("id", account.id)
-      .delete();
+    await orm.delete(accountDef, qb => qb.where("id", "=", account.id));
   },
 
   async getSessionAndUser(sessionToken) {

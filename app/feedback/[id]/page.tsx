@@ -1,23 +1,23 @@
 import { Metadata } from "next";
-import { feedbackPostAuthor, feedbackPostComments, feedbackPostDef } from "../../../src/features/feedback/entities/FeedbackPost";
-import { orm } from "../../../src/orm";
+import { feedbackPostAuthor, feedbackPostComments } from "../../../src/features/feedback/entities/FeedbackPost";
 import { zClientFeedbackPost } from "../../../src/features/feedback/entities/ClientFeedbackPost";
 import { ClientFeedbackPostPage } from "./clientPage";
 import { auth } from "../../../src/features/auth/auth";
 import { feedbackCommentAuthor } from "../../../src/features/feedback/entities/FeedbackComment";
-import { feedbackVoteDef } from "../../../src/features/feedback/entities/FeedbackVote";
 import { z } from "zod";
 import { zClientFeedbackComment } from "../../../src/features/feedback/entities/ClientFeedbackComment";
 import { zClientUser } from "../../../src/features/auth/entities/ClientUser";
 import { zClientAnonymousUser } from "../../../src/features/auth/entities/ClientAnonymousUser";
+import { feedbackPosts, feedbackVotes } from "../../../src/features/feedback/feedback";
+import { orm } from "../../../src/orm";
+import { feedbackVoteDef } from "../../../src/features/feedback/entities/FeedbackVote";
 
 type Props = {
   params: { id: string };
 };
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const post = await orm.getOne(feedbackPostDef, qb => qb.where("id", "=", props.params.id));
-
+  const post = await feedbackPosts.getById(props.params.id);
   return {
     title: post?.title ?? "Not found",
   };
@@ -26,11 +26,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export const dynamic = "force-dynamic";
 
 export default async function FeedbackPostPage(props: Props) {
-  const post = await orm.getOne(feedbackPostDef, qb => qb.where("id", "=", props.params.id), {
-    comments: [feedbackPostComments()(orm), {
-      author: feedbackCommentAuthor()(orm),
+  const post = await feedbackPosts.getById(props.params.id, {
+    comments: [feedbackPostComments(), {
+      author: feedbackCommentAuthor(),
     }],
-    author: feedbackPostAuthor()(orm),
+    author: feedbackPostAuthor(),
   });
   if (! post) {
     throw new Error("Post not found");

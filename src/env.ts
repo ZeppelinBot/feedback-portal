@@ -1,3 +1,4 @@
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -15,4 +16,8 @@ const envSchema = z.object({
     : z.string().url(),
 });
 
-export const env = envSchema.parse(process.env);
+const placeholder = {} as z.output<typeof envSchema>;
+
+export const env = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD
+  ? placeholder
+  : envSchema.parse(process.env);
