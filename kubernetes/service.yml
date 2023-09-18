@@ -8,5 +8,8 @@ spec:
   - name: http
     port: 80
     targetPort: 3000
+  - name: https
+    port: 443
+    targetPort: 3000
   selector:
     app: zeppelin-feedback-portal
