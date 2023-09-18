@@ -1,4 +1,5 @@
 FROM node:18-alpine AS base
+LABEL org.opencontainers.image.source="https://github.com/ZeppelinBot/feedback-portal"
 
 # == DEPENDENCIES ==
 FROM base AS deps

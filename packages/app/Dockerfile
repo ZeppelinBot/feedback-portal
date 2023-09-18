@@ -1,6 +1,7 @@
 # Based on https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
 FROM node:18-alpine AS base
+LABEL org.opencontainers.image.source="https://github.com/ZeppelinBot/feedback-portal"
 
 # == DEPENDENCIES ==
 FROM base AS deps
