@@ -14,14 +14,16 @@ spec:
         app: zeppelin-feedback-portal
     spec:
       containers:
-      - image: ghcr.io/zeppelinbot/zeppelin-feedback-portal-app:latest
+      - name: app
+        image: ghcr.io/zeppelinbot/zeppelin-feedback-portal-app:latest
         ports:
         - containerPort: 3000
         envFrom:
         - secretRef:
             name: feedback-portal-secrets
       initContainers:
-      - image: ghcr.io/zeppelinbot/zeppelin-feedback-portal-meta:latest
+      - name: migrations
+        image: ghcr.io/zeppelinbot/zeppelin-feedback-portal-meta:latest
         command: ['npm', 'run', 'cli', '--', 'migrations', 'up']
         envFrom:
         - secretRef:
