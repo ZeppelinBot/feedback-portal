@@ -1,9 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-/**
- * @param {Kysely<any>} db
- */
-export async function up(db) {
+export async function up(db: Kysely<any>) {
   await db.schema.createTable("users")
     .addColumn("id", "varchar(36)", c => c.primaryKey())
     .addColumn("name", "varchar(255)", c => c.notNull())
@@ -32,7 +29,7 @@ export async function up(db) {
     .addColumn("provider_account_id", "varchar(255)", c => c.notNull())
     .addColumn("refresh_token", "text", c => c.defaultTo(sql`NULL`))
     .addColumn("access_token", "text", c => c.defaultTo(sql`NULL`))
-    .addColumn("expires_at", "int", c => c.defaultTo(sql`NULL`))
+    .addColumn("expires_at", "integer", c => c.defaultTo(sql`NULL`))
     .addColumn("token_type", "text", c => c.defaultTo(sql`NULL`))
     .addColumn("scope", "text", c => c.defaultTo(sql`NULL`))
     .addColumn("id_token", "text", c => c.defaultTo(sql`NULL`))
@@ -52,10 +49,7 @@ export async function up(db) {
     .execute();
 }
 
-/**
- * @param {Kysely<any>} db
- */
-export async function down(db) {
+export async function down(db: Kysely<any>) {
   await db.schema.dropTable("verification_tokens").execute();
   await db.schema.dropTable("accounts").execute();
   await db.schema.dropTable("sessions").execute();

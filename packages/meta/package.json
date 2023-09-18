@@ -1,0 +1,19 @@
+{
+  "name": "zeppelin-feedback-portal-meta",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "cli": "node dist/cli.js"
+  },
+  "dependencies": {
+    "@commander-js/extra-typings": "^11.0.0",
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.1",
+    "kysely": "^0.26.3",
+    "mysql2": "^3.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.2",
+    "typescript": "~5.1"
+  }
+}

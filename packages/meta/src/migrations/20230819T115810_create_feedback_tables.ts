@@ -1,17 +1,14 @@
 import { Kysely, sql } from "kysely";
 
-/**
- * @param {Kysely<any>} db
- */
-export async function up(db) {
+export async function up(db: Kysely<any>) {
   await db.schema.createTable("feedback_posts")
     .addColumn("id", "varchar(36)", c => c.primaryKey())
     .addColumn("title", "text", c => c.notNull())
     .addColumn("body", "text", c => c.notNull())
     .addColumn("author_id", "varchar(36)", c => c.notNull())
     .addColumn("posted_at", "timestamp", c => c.notNull().defaultTo(sql`NOW()`))
-    .addColumn("num_votes", "int", c => c.notNull().defaultTo(sql`0`))
-    .addColumn("num_comments", "int", c => c.notNull().defaultTo(sql`0`))
+    .addColumn("num_votes", "integer", c => c.notNull().defaultTo(sql`0`))
+    .addColumn("num_comments", "integer", c => c.notNull().defaultTo(sql`0`))
     .addForeignKeyConstraint(
       "feedback_posts_author_fk", ["author_id"], "users", ["id"],
       cb => cb.onDelete("cascade").onUpdate("cascade"),
@@ -50,10 +47,7 @@ export async function up(db) {
     .execute();
 }
 
-/**
- * @param {Kysely<any>} db
- */
-export async function down(db) {
+export async function down(db: Kysely<any>) {
   await db.schema.dropTable("feedback_votes").execute();
   await db.schema.dropTable("feedback_comments").execute();
   await db.schema.dropTable("feedback_posts").execute();

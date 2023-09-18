@@ -1,3 +1,6 @@
+# This is the dockerfile for the feedback portal development environment
+# For production dockerfiles, see the dockerfiles for individual packages
+
 FROM ubuntu:20.04
 
 ARG DEV_UID

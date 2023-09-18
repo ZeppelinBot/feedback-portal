@@ -1,9 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-/**
- * @param {Kysely<any>} db
- */
-export async function up(db) {
+export async function up(db: Kysely<any>) {
   await db.schema.alterTable("feedback_posts")
     .addColumn("last_active_at", "timestamp", c => c.notNull().defaultTo(sql`NOW()`))
     .execute();
@@ -14,10 +11,7 @@ export async function up(db) {
     .execute();
 }
 
-/**
- * @param {Kysely<any>} db
- */
-export async function down(db) {
+export async function down(db: Kysely<any>) {
   await db.schema.dropIndex("feedback_posts_status_active_idx")
     .execute();
 

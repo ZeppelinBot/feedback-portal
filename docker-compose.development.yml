@@ -7,7 +7,7 @@ services:
   mysql:
     image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?:Missing MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DEV_MYSQL_ROOT_PASSWORD?:Missing DEV_MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: zeppelin-feedback-portal
     ports:
       - ${DEV_MYSQL_HOST_PORT:?Missing DEV_MYSQL_HOST_PORT}:3306
@@ -16,7 +16,7 @@ services:
 
   devenv:
     build:
-      context: ./docker/development/devenv
+      context: ./
       args:
         DEV_SSH_PASSWORD: ${DEV_SSH_PASSWORD:?Missing DEV_SSH_PASSWORD}
         DEV_UID: ${DEV_UID:-1000}

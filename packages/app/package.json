@@ -1,15 +1,13 @@
 {
-  "name": "zeppelin-feedback-portal",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "zeppelin-feedback-portal-app",
+  "type": "module",
   "scripts": {
     "dev": "bash ./start-dev.sh",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "debug": "tsc --noEmit",
-    "migrations": "node ./migrations.js"
+    "migrations": "node ./src/migrations.js"
   },
   "dependencies": {
     "@discordjs/core": "^1.0.0",
@@ -37,7 +35,6 @@
     "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
-  "type": "module",
   "devDependencies": {
     "@babel/plugin-proposal-class-static-block": "^7.21.0",
     "@types/humanize-duration": "^3.27.1",
@@ -46,7 +43,7 @@
     "@types/react-dom": "^18.2.7",
     "@types/sanitize-html": "^2.9.0",
     "@types/uuid": "^9.0.2",
-    "typescript": "5.1.6"
+    "typescript": "~5.1"
   },
   "overrides": {
     "styled-components": "^6.0.7"

@@ -1,5 +1,6 @@
 # Load .env
 set -o allexport
+source ../../.env
 source .env
 set +o allexport
 

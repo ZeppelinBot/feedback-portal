@@ -1,18 +1,12 @@
 import { Kysely, sql } from "kysely";
 
-/**
- * @param {Kysely<any>} db
- */
-export async function up(db) {
+export async function up(db: Kysely<any>) {
   await db.schema.alterTable("feedback_posts")
     .addColumn("status", "varchar(64)", c => c.notNull())
     .execute();
 }
 
-/**
- * @param {Kysely<any>} db
- */
-export async function down(db) {
+export async function down(db: Kysely<any>) {
   await db.schema.alterTable("feedback_posts")
     .dropColumn("status")
     .execute();
