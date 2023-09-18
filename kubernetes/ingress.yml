@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zeppelin-feedback-portal-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: feedback.zeppelin.gg
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: zeppelin-feedback-portal
+            port:
+              number: 80
