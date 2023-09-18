@@ -18,7 +18,7 @@ const defaults = process.env.NODE_ENV === "production"
 const envSchema = z.object({
   SECRET: z.string().length(32),
   MYSQL_HOST: z.string().nonempty(),
-  MYSQL_PORT: z.number(),
+  MYSQL_PORT: z.coerce.number(),
   MYSQL_USER: z.string().nonempty(),
   MYSQL_PASSWORD: z.string().nonempty(),
   MYSQL_DATABASE: z.string().nonempty(),
