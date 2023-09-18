@@ -1,17 +1,18 @@
 version: '3'
-name: zeppelin-issues-dev
+name: zeppelin-feedback-portal-dev
 volumes:
   home: {}
-  postgres-data: {}
+  mysql-data: {}
 services:
-  postgres:
-    image: postgres:15
+  mysql:
+    image: mysql:8
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD?:Missing POSTGRES_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?:Missing MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: zeppelin-feedback-portal
     ports:
-      - ${DEV_POSTGRES_HOST_PORT:?Missing DEV_POSTGRES_HOST_PORT}:5432
+      - ${DEV_MYSQL_HOST_PORT:?Missing DEV_MYSQL_HOST_PORT}:3306
     volumes:
-      - postgres-data:/var/lib/postgresql
+      - mysql-data:/var/lib/mysql
 
   devenv:
     build:
@@ -26,4 +27,4 @@ services:
       - home:/home/ubuntu
       # We mount the project in a non-root dir that's owned by the ubuntu user
       # This prevents weird errors in Next.js dev server's watcher
-      - ./:/var/project/zeppelin-issues
+      - ./:/var/project/zeppelin-feedback-portal

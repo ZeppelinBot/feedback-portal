@@ -5,7 +5,7 @@ import { Kysely, sql } from "kysely";
  */
 export async function up(db) {
   await db.schema.alterTable("feedback_posts")
-    .addColumn("status", "text", c => c.notNull())
+    .addColumn("status", "varchar(64)", c => c.notNull())
     .execute();
 }
 

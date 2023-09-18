@@ -1,10 +1,9 @@
 import { promises as fsp, writeFileSync } from "fs";
 import * as path from "path";
-import { FileMigrationProvider, Kysely, Migrator, PostgresDialect } from "kysely";
+import { FileMigrationProvider, Kysely, Migrator, MysqlDialect } from "kysely";
 import { join as joinPaths } from "path";
 import dotenv from "dotenv";
-import pgPkg from "pg";
-const { Pool } = pgPkg;
+import { createPool } from "mysql2";
 
 dotenv.config();
 
@@ -32,13 +31,14 @@ function migrationPath(filename = "") {
 
 function getMigrator() {
   const db = new Kysely({
-    dialect: new PostgresDialect({
-      pool: new Pool({
-        host: "postgres",
-        port: 5432,
-        user: "postgres",
-        database: "postgres",
-        password: process.env.POSTGRES_PASSWORD,
+    dialect: new MysqlDialect({
+      pool: createPool({
+        host: process.env.MYSQL_HOST ?? "mysql",
+        port: process.env.MYSQL_PORT ?? 3306,
+        user: process.env.MYSQL_USER ?? "root",
+        database: process.env.MYSQL_DATABASE ?? "zeppelin-feedback-portal",
+        password: process.env.MYSQL_PASSWORD ?? process.env.MYSQL_ROOT_PASSWORD,
+        connectionLimit: 10,
       }),
     }),
   });

@@ -5,19 +5,19 @@ import { Kysely, sql } from "kysely";
  */
 export async function up(db) {
   await db.schema.createTable("users")
-    .addColumn("id", "uuid", c => c.primaryKey())
-    .addColumn("name", "text")
-    .addColumn("email", "text", c => c.notNull())
+    .addColumn("id", "varchar(36)", c => c.primaryKey())
+    .addColumn("name", "varchar(255)", c => c.notNull())
+    .addColumn("email", "varchar(255)", c => c.notNull())
     .addColumn("email_verified", "timestamp")
-    .addColumn("image", "text")
-    .addColumn("role", "text", c => c.notNull())
+    .addColumn("image", "varchar(255)")
+    .addColumn("role", "varchar(255)", c => c.notNull())
     .execute();
 
   await db.schema.createTable("sessions")
-    .addColumn("id", "uuid", c => c.primaryKey())
-    .addColumn("user_id", "uuid", c => c.notNull())
+    .addColumn("id", "varchar(36)", c => c.primaryKey())
+    .addColumn("user_id", "varchar(36)", c => c.notNull())
     .addColumn("expires", "timestamp", c => c.notNull())
-    .addColumn("session_token", "text", c => c.unique().notNull())
+    .addColumn("session_token", "varchar(255)", c => c.unique().notNull())
     .addForeignKeyConstraint(
       "sessions_user_fk", ["user_id"], "users", ["id"],
       cb => cb.onDelete("cascade").onUpdate("cascade"),
@@ -25,11 +25,11 @@ export async function up(db) {
     .execute();
 
   await db.schema.createTable("accounts")
-    .addColumn("id", "uuid", c => c.primaryKey())
-    .addColumn("user_id", "uuid", c => c.notNull())
-    .addColumn("type", "text", c => c.notNull())
-    .addColumn("provider", "text", c => c.notNull())
-    .addColumn("provider_account_id", "text", c => c.notNull())
+    .addColumn("id", "varchar(36)", c => c.primaryKey())
+    .addColumn("user_id", "varchar(36)", c => c.notNull())
+    .addColumn("type", "varchar(255)", c => c.notNull())
+    .addColumn("provider", "varchar(255)", c => c.notNull())
+    .addColumn("provider_account_id", "varchar(255)", c => c.notNull())
     .addColumn("refresh_token", "text", c => c.defaultTo(sql`NULL`))
     .addColumn("access_token", "text", c => c.defaultTo(sql`NULL`))
     .addColumn("expires_at", "int", c => c.defaultTo(sql`NULL`))
@@ -45,9 +45,9 @@ export async function up(db) {
     .execute();
 
   await db.schema.createTable("verification_tokens")
-    .addColumn("token", "text", c => c.primaryKey())
+    .addColumn("token", "varchar(255)", c => c.primaryKey())
     .addColumn("expires", "timestamp", c => c.notNull())
-    .addColumn("identifier", "text", c => c.notNull())
+    .addColumn("identifier", "varchar(255)", c => c.notNull())
     .addUniqueConstraint("verification_tokens_uq", ["token", "identifier"])
     .execute();
 }

@@ -1,9 +1,27 @@
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { z } from "zod";
 
+const devDefaults = {
+  MYSQL_HOST: "mysql",
+  MYSQL_PORT: 3306,
+  MYSQL_USER: "root",
+  MYSQL_PASSWORD: process.env.MYSQL_ROOT_PASSWORD,
+  MYSQL_DATABASE: "zeppelin-feedback-portal",
+};
+
+const prodDefaults = {};
+
+const defaults = process.env.NODE_ENV === "production"
+  ? prodDefaults
+  : devDefaults;
+
 const envSchema = z.object({
   SECRET: z.string().length(32),
-  POSTGRES_PASSWORD: z.string().nonempty(),
+  MYSQL_HOST: z.string().nonempty(),
+  MYSQL_PORT: z.number(),
+  MYSQL_USER: z.string().nonempty(),
+  MYSQL_PASSWORD: z.string().nonempty(),
+  MYSQL_DATABASE: z.string().nonempty(),
   DISCORD_CLIENT_ID: z.string().nonempty(),
   DISCORD_CLIENT_SECRET: z.string().nonempty(),
   AUTH_GUILD_ID: z.string().nonempty(),
@@ -16,8 +34,11 @@ const envSchema = z.object({
     : z.string().url(),
 });
 
-const placeholder = {} as z.output<typeof envSchema>;
+const buildPlaceholder = {} as z.output<typeof envSchema>;
 
 export const env = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD
-  ? placeholder
-  : envSchema.parse(process.env);
+  ? buildPlaceholder
+  : envSchema.parse({
+    ...defaults,
+    ...process.env,
+  });
