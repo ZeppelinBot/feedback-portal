@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: zeppelin-feedback-portal
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - name: https
-    port: 443
+  - name: http
+    port: 80
     targetPort: 3000
   selector:
     app: zeppelin-feedback-portal
