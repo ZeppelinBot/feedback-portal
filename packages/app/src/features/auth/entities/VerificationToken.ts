@@ -1,19 +1,20 @@
-import { KyselyEntityDefinition } from "@snadi/kysely";
+import { SnadiKyselyEntityDefinition } from "@snadi/kysely";
 import { z } from "zod";
 
-export const zToVerificationTokenEntity = z.object({
+const zToVerificationTokenEntity = z.object({
   token: z.string(),
   expires: z.date(),
   identifier: z.string(),
 });
 
-export const zToVerificationTokenRow = zToVerificationTokenEntity;
+const zToVerificationTokenInsert = zToVerificationTokenEntity;
+const zToVerificationTokenUpdate = zToVerificationTokenEntity;
 
 export type VerificationToken = z.output<typeof zToVerificationTokenEntity>;
 
 export const verificationTokenDef = {
   tableName: "verification_tokens" as const,
-  primaryKey: "token",
-  toEntity: (data: z.input<typeof zToVerificationTokenEntity>) => zToVerificationTokenEntity.parse(data),
-  toRow: (data: z.input<typeof zToVerificationTokenRow>) => zToVerificationTokenRow.parse(data),
-} satisfies KyselyEntityDefinition;
+  toEntity: (data: unknown) => zToVerificationTokenEntity.parse(data),
+  toInsert: (data: z.input<typeof zToVerificationTokenInsert>) => zToVerificationTokenInsert.parse(data),
+  toUpdate: (data: z.input<typeof zToVerificationTokenUpdate>) => zToVerificationTokenUpdate.parse(data),
+} satisfies SnadiKyselyEntityDefinition;

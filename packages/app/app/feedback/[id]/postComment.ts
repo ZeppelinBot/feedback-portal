@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { v4 as uuidV4 } from "uuid";
 import { z } from "zod";
 import { auth } from "../../../src/features/auth/auth";
-import { feedbackComments, feedbackPosts } from "../../../src/features/feedback/feedback";
+import { feedbackPosts } from "../../../src/features/feedback/repositories/feedbackPosts";
+import { feedbackComments } from "../../../src/features/feedback/repositories/feedbackComments";
 
 const zData = z.object({
   post_id: z.string(),
@@ -24,7 +25,6 @@ export async function postComment(fd: FormData) {
   }
 
   const comment = await feedbackComments.create({
-    id: uuidV4(),
     post_id: data.post_id,
     body: data.body,
     author_id: session.user.id,

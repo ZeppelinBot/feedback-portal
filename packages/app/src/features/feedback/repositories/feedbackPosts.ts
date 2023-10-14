@@ -1,12 +1,13 @@
 import { RelationsToLoad } from "@snadi/core";
-import { KyselyOrm, ToRowInput } from "@snadi/kysely";
+import { feedbackPostDef } from "../entities/FeedbackPost";
+import { InsertInput, UpdateInput } from "@snadi/kysely";
+import { orm } from "../../../orm";
+import { feedbackCommentDef } from "../entities/FeedbackComment";
 import { sql } from "kysely";
-import { KyselyDB, orm } from "../../orm";
-import { Optional } from "../../utils/types";
-import { feedbackCommentDef } from "./entities/FeedbackComment";
-import { feedbackPostDef } from "./entities/FeedbackPost";
-import { feedbackVoteDef } from "./entities/FeedbackVote";
+import { feedbackVoteDef } from "../entities/FeedbackVote";
 import { v4 as uuidV4 } from "uuid";
+
+type CreateInput = Omit<InsertInput<typeof feedbackPostDef>, "id">;
 
 export const feedbackPosts = {
   getById<R extends RelationsToLoad | undefined>(id: string, relations?: R) {
@@ -17,11 +18,16 @@ export const feedbackPosts = {
     );
   },
 
-  create(input: ToRowInput<typeof feedbackPostDef>) {
-    return orm.create(feedbackPostDef, input);
+  async create(input: CreateInput) {
+    const id = uuidV4();
+    await orm.insert(feedbackPostDef, {
+      ...input,
+      id,
+    });
+    return (await this.getById(id))!;
   },
 
-  updateById(id: string, input: Optional<ToRowInput<typeof feedbackPostDef>>) {
+  updateById(id: string, input: UpdateInput<typeof feedbackPostDef>) {
     return orm.update(
       feedbackPostDef,
       qb => qb.where("id", "=", id),
@@ -86,58 +92,5 @@ export const feedbackPosts = {
         },
       );
     });
-  },
-};
-
-export const feedbackComments = {
-  getById<R extends RelationsToLoad | undefined>(id: string, relations?: R) {
-    return orm.getOne(
-      feedbackCommentDef,
-      qb => qb.where("id", "=", id),
-      relations,
-    );
-  },
-
-  create(input: ToRowInput<typeof feedbackCommentDef>) {
-    return orm.create(feedbackCommentDef, input);
-  },
-
-  async deleteById(id: string) {
-    const comment = await orm.getOne(feedbackCommentDef, qb => qb.where("id", "=", id));
-    if (! comment) {
-      return;
-    }
-
-    await orm.delete(feedbackCommentDef, qb => qb.where("id", "=", id));
-  },
-};
-
-export const feedbackVotes = {
-  add(authorId: string, postId: string) {
-    return orm.transaction(async (trxOrm) => {
-      const existingVote = await trxOrm.getOne(
-        feedbackVoteDef,
-        qb => qb.where("author_id", "=", authorId).where("post_id", "=", postId),
-      );
-      if (! existingVote) {
-        await trxOrm.create(feedbackVoteDef, {
-          id: uuidV4(),
-          author_id: authorId,
-          post_id: postId,
-          voted_at: new Date(),
-        });
-      }
-    });
-  },
-
-  async remove(authorId: string, postId: string) {
-    await orm.delete(
-      feedbackVoteDef,
-      qb => qb.where("author_id", "=", authorId).where("post_id", "=", postId),
-    );
-  },
-
-  create(input: ToRowInput<typeof feedbackVoteDef>) {
-    return orm.create(feedbackVoteDef, input);
   },
 };

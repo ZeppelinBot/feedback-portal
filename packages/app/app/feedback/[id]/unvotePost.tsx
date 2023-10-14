@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "../../../src/features/auth/auth";
-import { feedbackPosts, feedbackVotes } from "../../../src/features/feedback/feedback";
+import { feedbackPosts } from "../../../src/features/feedback/repositories/feedbackPosts";
+import { feedbackVotes } from "../../../src/features/feedback/repositories/feedbackVotes";
 
 const zData = z.object({
   post_id: z.string(),

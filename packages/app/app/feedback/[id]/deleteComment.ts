@@ -3,9 +3,9 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth } from "../../../src/features/auth/auth";
-import { feedbackComments } from "../../../src/features/feedback/feedback";
 import { zFormData } from "../../../src/utils/zFormData";
 import { users } from "../../../src/features/auth/users";
+import { feedbackComments } from "../../../src/features/feedback/repositories/feedbackComments";
 
 const zData = zFormData(z.object({
   comment_id: z.string(),

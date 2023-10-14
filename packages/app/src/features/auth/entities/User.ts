@@ -1,35 +1,37 @@
-import { KyselyEntityDefinition, hasMany } from "@snadi/kysely";
+import { SnadiKyselyEntityDefinition, hasMany } from "@snadi/kysely";
 import { z } from "zod";
 import { accountDef } from "./Account";
 import { sessionDef } from "./Session";
 import { roles } from "../roles";
 
-export const zToUserEntity = z.object({
+const zRequiredFields = z.object({
   id: z.string().uuid(),
-  name: z.string().nullable(),
   email: z.string(),
-  email_verified: z.date().nullable(),
-  image: z.string().nullable(),
   role: roles,
 });
 
-export const zToUserRow = z.object({
-  id: z.string().uuid(),
-  name: z.string().nullable().optional(),
-  email: z.string(),
-  email_verified: z.date().nullable().optional(),
-  image: z.string().nullable().optional(),
-  role: roles,
+const zOptionalFields = z.object({
+  name: z.string().nullable(),
+  email_verified: z.date().nullable(),
+  image: z.string().nullable(),
 });
+
+const zToUserEntity = zRequiredFields
+  .merge(zOptionalFields);
+
+const zToUserInsert = zRequiredFields
+  .merge(zOptionalFields.partial());
+
+const zToUserUpdate = zToUserInsert.partial();
 
 export type User = z.output<typeof zToUserEntity>;
 
 export const userDef = {
   tableName: "users" as const,
-  primaryKey: "id",
-  toEntity: (data: z.input<typeof zToUserEntity>) => zToUserEntity.parse(data),
-  toRow: (data: z.input<typeof zToUserRow>) => zToUserRow.parse(data),
-} satisfies KyselyEntityDefinition;
+  toEntity: (data: unknown) => zToUserEntity.parse(data),
+  toInsert: (data: z.input<typeof zToUserInsert>) => zToUserInsert.parse(data),
+  toUpdate: (data: z.input<typeof zToUserUpdate>) => zToUserUpdate.parse(data),
+} satisfies SnadiKyselyEntityDefinition;
 
 export const userSessions = () => hasMany(userDef, "id", sessionDef, "user_id");
 export const userAccounts = () => hasMany(userDef, "id", accountDef, "user_id");

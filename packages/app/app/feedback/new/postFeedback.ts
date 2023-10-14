@@ -4,9 +4,10 @@ import { redirect } from "next/navigation";
 import { v4 as uuidV4 } from "uuid";
 import { z } from "zod";
 import { auth } from "../../../src/features/auth/auth";
-import { feedbackPosts, feedbackVotes } from "../../../src/features/feedback/feedback";
 import { feedbackStatus } from "../../../src/features/feedback/feedbackStatus";
 import { orm } from "../../../src/orm";
+import { feedbackPosts } from "../../../src/features/feedback/repositories/feedbackPosts";
+import { feedbackVotes } from "../../../src/features/feedback/repositories/feedbackVotes";
 
 const zData = z.object({
   title: z.string().min(3).max(255),
@@ -28,7 +29,6 @@ export async function postFeedback(fd: FormData) {
     const now = new Date();
 
     const post = await feedbackPosts.create({
-      id: uuidV4(),
       author_id: session.user.id,
       title: data.title,
       body: data.body,
@@ -39,12 +39,7 @@ export async function postFeedback(fd: FormData) {
       last_active_at: now,
     });
 
-    await feedbackVotes.create({
-      id: uuidV4(),
-      author_id: session.user.id,
-      post_id: post.id,
-      voted_at: now,
-    });
+    await feedbackVotes.add(post.id, session.user.id);
 
     return post;
   });

@@ -1,5 +1,5 @@
 import { env } from "./env";
-import { EntitiesToKyselyDatabase, KyselyOrm } from "@snadi/kysely";
+import { EntitiesToKyselyDatabase, SnadiKyselyOrm } from "@snadi/kysely";
 import { accountDef } from "./features/auth/entities/Account";
 import { sessionDef } from "./features/auth/entities/Session";
 import { userDef } from "./features/auth/entities/User";
@@ -33,4 +33,4 @@ const dialect = new MysqlDialect({
 
 const kysely = new Kysely<KyselyDB>({ dialect });
 
-export const orm = new KyselyOrm(kysely);
+export const orm = new SnadiKyselyOrm(kysely);

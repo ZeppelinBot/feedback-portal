@@ -3,10 +3,10 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth } from "../../../src/features/auth/auth";
-import { feedbackPosts } from "../../../src/features/feedback/feedback";
 import { feedbackStatus } from "../../../src/features/feedback/feedbackStatus";
 import { roles } from "../../../src/features/auth/roles";
 import { users } from "../../../src/features/auth/users";
+import { feedbackPosts } from "../../../src/features/feedback/repositories/feedbackPosts";
 
 const zData = z.object({
   post_id: z.string().uuid(),

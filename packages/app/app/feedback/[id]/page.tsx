@@ -8,9 +8,9 @@ import { z } from "zod";
 import { zClientFeedbackComment } from "../../../src/features/feedback/entities/ClientFeedbackComment";
 import { zClientUser } from "../../../src/features/auth/entities/ClientUser";
 import { zClientAnonymousUser } from "../../../src/features/auth/entities/ClientAnonymousUser";
-import { feedbackPosts, feedbackVotes } from "../../../src/features/feedback/feedback";
 import { orm } from "../../../src/orm";
 import { feedbackVoteDef } from "../../../src/features/feedback/entities/FeedbackVote";
+import { feedbackPosts } from "../../../src/features/feedback/repositories/feedbackPosts";
 
 type Props = {
   params: { id: string };
