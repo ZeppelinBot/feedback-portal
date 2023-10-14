@@ -10,7 +10,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DEV_MYSQL_ROOT_PASSWORD?:Missing DEV_MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: zeppelin-feedback-portal
     ports:
-      - ${DEV_MYSQL_HOST_PORT:?Missing DEV_MYSQL_HOST_PORT}:3306
+      - 127.0.0.1:${DEV_MYSQL_HOST_PORT:?Missing DEV_MYSQL_HOST_PORT}:3306
     volumes:
       - mysql-data:/var/lib/mysql
 
@@ -21,8 +21,8 @@ services:
         DEV_SSH_PASSWORD: ${DEV_SSH_PASSWORD:?Missing DEV_SSH_PASSWORD}
         DEV_UID: ${DEV_UID:-1000}
     ports:
-      - "${DEV_WEB_PORT:?Missing DEV_WEB_PORT}:${DEV_WEB_PORT}"
-      - "${DEV_SSH_PORT:?Missing DEV_SSH_PORT}:22"
+      - "127.0.0.1:${DEV_WEB_PORT:?Missing DEV_WEB_PORT}:${DEV_WEB_PORT}"
+      - "127.0.0.1:${DEV_SSH_PORT:?Missing DEV_SSH_PORT}:22"
     volumes:
       - home:/home/ubuntu
       # We mount the project in a non-root dir that's owned by the ubuntu user
