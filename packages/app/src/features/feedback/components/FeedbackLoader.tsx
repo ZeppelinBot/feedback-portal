@@ -12,7 +12,7 @@ type FeedbackLoaderProps = {
 export async function FeedbackLoader(params: FeedbackLoaderProps) {
   let qb = orm.kysely.selectFrom(feedbackPostDef.tableName);
   if (params.searchTerm) {
-    qb = qb.where("title", "ilike", `%${params.searchTerm}%`);
+    qb = qb.where("title", "like", `%${params.searchTerm}%`);
   }
 
   const { count } = await qb.select(({ fn }) => [fn.countAll().as("count")]).executeTakeFirstOrThrow();
