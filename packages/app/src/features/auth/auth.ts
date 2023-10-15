@@ -1,60 +1,75 @@
-import NextAuth, { DefaultSession } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-import { REST } from "@discordjs/rest";
-import { Routes, RESTGetCurrentUserGuildMemberResult } from "@discordjs/core/http-only";
-import { env } from "@src/env";
-import { customNextAuthAdapter } from "@src/features/auth/customNextAuthAdapter";
+import { Issuer, generators } from "openid-client";
+import { env } from "../../env";
+import { RESTGetAPICurrentUserResult } from "@discordjs/core";
+import { session } from "../session/session";
+import { loginSessions } from "./repositories/loginSessions";
+import { users } from "./repositories/users";
 
-declare module "next-auth" {
-  export interface Session {
-    user: {
-      id: string;
-    } & DefaultSession["user"];
-  }
+const redirectUri = `${env.ROOT_URL}/api/auth/callback`;
+
+const discordIssuer = new Issuer({
+  issuer: "discord",
+  authorization_endpoint: "https://discord.com/oauth2/authorize",
+  token_endpoint: "https://discord.com/api/oauth2/token",
+  revocation_endpoint: "https://discord.com/api/oauth2/token/revoke",
+  userinfo_endpoint: "https://discord.com/api/users/@me",
+});
+
+const oauthClient = new discordIssuer.Client({
+  client_id: env.DISCORD_CLIENT_ID,
+  client_secret: env.DISCORD_CLIENT_SECRET,
+  redirect_uris: [redirectUri],
+  response_types: ["code"],
+});
+
+type AuthorizationUrlResult = {
+  url: string;
+  codeVerifier: string;
+};
+
+export function generateAuthorizationUrl(scope: string): AuthorizationUrlResult {
+  const codeVerifier = generators.codeVerifier();
+  const codeChallenge = generators.codeChallenge(codeVerifier);
+
+  const url = oauthClient.authorizationUrl({
+    scope,
+    code_challenge: codeChallenge,
+    code_challenge_method: "S256",
+  });
+
+  return {
+    url,
+    codeVerifier,
+  };
 }
 
-const provider = DiscordProvider({
-  clientId: env.DISCORD_CLIENT_ID,
-  clientSecret: env.DISCORD_CLIENT_SECRET,
-});
-provider.authorization = "https://discord.com/api/oauth2/authorize?scope=identify+guilds.members.read";
+export function fetchTokensWithParams(params: any, codeVerifier: string) {
+  return oauthClient.oauthCallback(redirectUri, params, { code_verifier: codeVerifier, response_type: "code" });
+}
 
-export const nextAuth = NextAuth({
-  adapter: customNextAuthAdapter,
-  pages: {
-    error: "/errors/auth",
-  },
-  providers: [
-    provider,
-  ],
-  secret: env.SECRET,
-  callbacks: {
-    async signIn({ account }) {
-      if (! account?.access_token) {
-        return false;
-      }
+export function fetchUserinfo(accessToken: string): Promise<RESTGetAPICurrentUserResult> {
+  return oauthClient.userinfo(accessToken);
+}
 
-      const rest = new REST({ version: "10", authPrefix: "Bearer" }).setToken(account.access_token);
-      const guildMember = await rest.get(Routes.userGuildMember(env.AUTH_GUILD_ID)).catch(() => null) as RESTGetCurrentUserGuildMemberResult | null;
-      if (! guildMember || ! guildMember.roles.includes(env.AUTH_ROLE_ID)) {
-        console.log(guildMember?.user?.id, "does not have role", env.AUTH_ROLE_ID, "| all:", guildMember?.roles.join(" "));
-        return false;
-      }
+export async function getCurrentLoginSession() {
+  const loginSessionId = session().get("loginSessionId");
+  if (! loginSessionId) {
+    return null;
+  }
 
-      return true;
-    },
-    async session({ session, user }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user.id,
-        },
-      };
-    },
-  },
-});
+  const loginSession = await loginSessions.getById(loginSessionId);
+  if (! loginSession || loginSession.expires_at < new Date()) {
+    return null;
+  }
 
-export const GET = nextAuth.handlers.GET.bind(nextAuth.handlers);
-export const POST = nextAuth.handlers.POST.bind(nextAuth.handlers);
-export const auth = nextAuth.auth.bind(nextAuth);
+  return loginSession;
+}
+
+export async function getCurrentUser() {
+  const loginSession = await getCurrentLoginSession();
+  if (! loginSession) {
+    return null;
+  }
+
+  return users.getById(loginSession.user_id);
+}

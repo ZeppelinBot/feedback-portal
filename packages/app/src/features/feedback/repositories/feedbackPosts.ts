@@ -38,7 +38,7 @@ export const feedbackPosts = {
   refreshLastActive(id: string) {
     return orm.transaction(async (trxOrm) => {
       const result = await trxOrm.kysely.selectFrom(feedbackPostDef.tableName)
-        .leftJoin(feedbackCommentDef.tableName, cb => cb.on("feedback_comments.post_id", "=", "feedback_posts.id"))
+        .leftJoin(feedbackCommentDef.tableName, cb => cb.onRef("feedback_comments.post_id", "=", "feedback_posts.id"))
         .where("feedback_posts.id", "=", id)
         .groupBy("feedback_posts.id")
         .select([

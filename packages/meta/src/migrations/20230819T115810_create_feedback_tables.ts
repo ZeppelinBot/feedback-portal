@@ -6,7 +6,7 @@ export async function up(db: Kysely<any>) {
     .addColumn("title", "text", c => c.notNull())
     .addColumn("body", "text", c => c.notNull())
     .addColumn("author_id", "varchar(36)", c => c.notNull())
-    .addColumn("posted_at", "timestamp", c => c.notNull().defaultTo(sql`NOW()`))
+    .addColumn("posted_at", "datetime", c => c.notNull().defaultTo(sql`NOW()`))
     .addColumn("num_votes", "integer", c => c.notNull().defaultTo(sql`0`))
     .addColumn("num_comments", "integer", c => c.notNull().defaultTo(sql`0`))
     .addForeignKeyConstraint(
@@ -20,7 +20,7 @@ export async function up(db: Kysely<any>) {
     .addColumn("post_id", "varchar(36)", c => c.notNull())
     .addColumn("body", "text", c => c.notNull())
     .addColumn("author_id", "varchar(36)", c => c.notNull())
-    .addColumn("posted_at", "timestamp", c => c.notNull().defaultTo(sql`NOW()`))
+    .addColumn("posted_at", "datetime", c => c.notNull().defaultTo(sql`NOW()`))
     .addForeignKeyConstraint(
       "feedback_comments_post_fk", ["post_id"], "feedback_posts", ["id"],
       cb => cb.onDelete("cascade").onUpdate("cascade"),
@@ -35,7 +35,7 @@ export async function up(db: Kysely<any>) {
     .addColumn("id", "varchar(36)", c => c.primaryKey())
     .addColumn("author_id", "varchar(36)", c => c.notNull())
     .addColumn("post_id", "varchar(36)", c => c.notNull())
-    .addColumn("voted_at", "timestamp", c => c.notNull().defaultTo(sql`NOW()`))
+    .addColumn("voted_at", "datetime", c => c.notNull().defaultTo(sql`NOW()`))
     .addForeignKeyConstraint(
       "feedback_votes_author_fk", ["author_id"], "users", ["id"],
       cb => cb.onDelete("cascade").onUpdate("cascade"),

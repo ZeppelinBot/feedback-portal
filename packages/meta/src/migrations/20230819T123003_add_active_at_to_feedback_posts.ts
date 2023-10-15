@@ -2,7 +2,7 @@ import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>) {
   await db.schema.alterTable("feedback_posts")
-    .addColumn("last_active_at", "timestamp", c => c.notNull().defaultTo(sql`NOW()`))
+    .addColumn("last_active_at", "datetime", c => c.notNull().defaultTo(sql`NOW()`))
     .execute();
 
   await db.schema.createIndex("feedback_posts_status_active_idx")

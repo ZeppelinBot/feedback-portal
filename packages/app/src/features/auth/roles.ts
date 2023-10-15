@@ -6,3 +6,5 @@ export const roles = z.enum([
 ]);
 
 export const defaultRole = roles.enum.MEMBER;
+
+export type Role = z.output<typeof roles>;

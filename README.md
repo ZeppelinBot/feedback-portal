@@ -8,10 +8,6 @@ Everything else, such as reusable components, utility functions, repositories/da
 
 # Notes
 
-## next-auth v5
-
-The project uses v5 of next-auth, which is currently in development. See [next-auth PR #7443](https://github.com/nextauthjs/next-auth/pull/7443) for up-to-date documentation and current status.
-
 # Building and publishing for prod
 
 1. Build the production image

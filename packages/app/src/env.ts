@@ -26,6 +26,7 @@ const envSchema = z.object({
   DISCORD_CLIENT_SECRET: z.string().nonempty(),
   AUTH_GUILD_ID: z.string().nonempty(),
   AUTH_ROLE_ID: z.string().nonempty(),
+  ROOT_URL: z.string().url(),
 
   // This isn't actually used from the env object directly, but it's included here for validation
   // Required in prod

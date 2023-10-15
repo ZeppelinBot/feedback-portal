@@ -1,7 +1,2 @@
-import NewFeedbackClientPage from "./clientPage";
-
-export default async function NewFeedbackPage() {
-  return (
-    <NewFeedbackClientPage />
-  );
-}
+export * from "@src/features/feedback/pages/NewFeedbackPage";
+export { default } from "@src/features/feedback/pages/NewFeedbackPage";
