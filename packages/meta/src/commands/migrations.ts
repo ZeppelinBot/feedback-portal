@@ -21,6 +21,10 @@ function migrationPath(filename = "") {
   return joinPaths(process.cwd(), "dist/migrations", filename);
 }
 
+function migrationSourcePath(filename = "") {
+  return joinPaths(process.cwd(), "src/migrations", filename);
+}
+
 function getMigrator() {
   const db = new Kysely({
     dialect: new MysqlDialect({
@@ -98,7 +102,7 @@ export function initMigrationsCommand(program: Command) {
     .action(async (name) => {
       const ts = (new Date()).toISOString().slice(0, 19).replace(/[:-]/g, "");
       const filename = `${ts}_${name}.ts`;
-      writeFileSync(migrationPath(filename), migrationTemplate, { encoding: "utf8" });
-      console.log(`Created ${migrationPath(filename)}`);
+      writeFileSync(migrationSourcePath(filename), migrationTemplate, { encoding: "utf8" });
+      console.log(`Created ${migrationSourcePath(filename)}`);
     });
 }
