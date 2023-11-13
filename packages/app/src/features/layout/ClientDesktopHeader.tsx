@@ -12,26 +12,24 @@ import { ClientUser } from "../auth/entities/ClientUser";
 import { Username } from "../auth/components/Username";
 import { login } from "../auth/actions/login";
 import { logout } from "../auth/actions/logout";
+import { Home as HomeIcon, MessageRoundedAdd } from "@styled-icons/boxicons-solid";
+import { LogOut } from "@styled-icons/boxicons-regular";
 
 const HeaderWrapper = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: none;
 
-  margin-bottom: 32px;
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     margin-bottom: 64px;
   `)}
 `;
 
 const LogoArea = styled.div`
-  flex: 1 1 100%;
-  margin-top: 16px;
-
-  ${atBreakpoint(ds.breakpoints.md, css`
-    flex: 0 0 auto;
-    margin-top: 0;
-  `)}
+  flex: 0 0 auto;
+  margin-top: 0;
 `;
 
 const LogoAreaLink = styled(NextLink)`
@@ -45,44 +43,27 @@ const LogoAreaLink = styled(NextLink)`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-
-  ${atBreakpoint(ds.breakpoints.md, css`
-    gap: 24px;
-  `)}
+  gap: 24px;
 `;
 
 const LogoImageWrapper = styled.div`
   position: relative;
   flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-
-  ${atBreakpoint(ds.breakpoints.md, css`
   width: 80px;
-  `)}
+  height: 40px;
 `;
 
 const MainHeading = styled.h1`
   font: ${ds.text.fonts.heading};
-  font-size: 18px;
+  font-size: 28px;
   font-weight: 400;
   margin: 0;
-
-  ${atBreakpoint(ds.breakpoints.md, css`
-  font-size: 28px;
-  `)}
 `;
 
 const MenuArea = styled.menu`
   flex: 0 0 auto;
   margin: 0;
   padding: 0;
-
-  display: none;
-  ${atBreakpoint(ds.breakpoints.md, css`
-    display: block;
-  `)}
 `;
 
 const MenuList = styled.ul`
@@ -91,7 +72,7 @@ const MenuList = styled.ul`
   list-style: none;
 
   display: flex;
-  gap: 24px;
+  gap: 16px;
 `;
 
 const MenuItem = styled.li`
@@ -103,9 +84,15 @@ const MenuSeparator = styled.div`
 `;
 
 const menuLinkStyles = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
   color: ${ds.colors.gray.dynamic["800"]};
   text-decoration: none;
   font-weight: 500;
+
+  padding: 8px;
 
   &:visited {
     color: ${ds.colors.gray.dynamic["800"]};
@@ -142,11 +129,15 @@ const MenuButtonLink = styled.button<MenuLinkProps>`
   ${props => props.$active && activeMenuLinkStyles}
 `;
 
+const MenuUsernameWrapper = styled.div`
+  padding: 8px;
+`;
+
 type ClientMainHeaderProps = {
   user: ClientUser | null;
 };
 
-export function ClientMainHeader(props: ClientMainHeaderProps): ReactElement {
+export function ClientDesktopHeader(props: ClientMainHeaderProps): ReactElement {
   const pathname = usePathname();
 
   return (
@@ -159,7 +150,6 @@ export function ClientMainHeader(props: ClientMainHeaderProps): ReactElement {
               alt=""
               fill={true}
               style={{ objectFit: "contain" }}
-              sizes={`(min-width: ${ds.breakpoints.md}) 80px, 40px`}
             />
           </LogoImageWrapper>
           <MainHeading>
@@ -170,13 +160,15 @@ export function ClientMainHeader(props: ClientMainHeaderProps): ReactElement {
       <MenuArea>
         <MenuList>
           <MenuItem>
-            <MenuRouterLink href="/" $active={pathname === "/" || pathname.startsWith("/feedback")}>
-              Feedback
+            <MenuRouterLink href="/" $active={pathname === "/"}>
+              <HomeIcon size="20px" />
+              Home
             </MenuRouterLink>
           </MenuItem>
           <MenuItem>
-            <MenuRouterLink href="/" $active={pathname.startsWith("/about")}>
-              About
+            <MenuRouterLink href="/feedback/new" $active={pathname === "/feedback/new"}>
+              <MessageRoundedAdd size="20px" />
+              New feedback
             </MenuRouterLink>
           </MenuItem>
           <MenuSeparator />
@@ -184,7 +176,9 @@ export function ClientMainHeader(props: ClientMainHeaderProps): ReactElement {
             if (props.user) {
               return <>
                 <MenuItem>
-                  <Username user={props.user} />
+                  <MenuUsernameWrapper>
+                    <Username user={props.user} />
+                  </MenuUsernameWrapper>
                 </MenuItem>
                 <MenuItem>
                   <form action={logout}>

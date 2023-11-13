@@ -16,7 +16,7 @@ const SearchLocation = styled.div`
   justify-content: center;
   gap: 16px;
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     justify-content: flex-start;
     margin-bottom: -36px;
     z-index: 1;

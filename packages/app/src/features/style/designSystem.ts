@@ -53,6 +53,8 @@ export const ds = {
       body: "normal 16px/1.4 'Inter Variable', system-ui, sans-serif",
     },
     sizes: {
+      desktopBody: "16px",
+      mobileBody: "14px",
       h1: "28px",
       h2: "26px",
       h3: "23px",

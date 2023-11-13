@@ -8,7 +8,7 @@ export const Container = styled.div`
   margin: 0 auto;
   padding: ${ds.spacing["4"]};
 
-  ${atBreakpoint(ds.breakpoints.sm, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     padding: ${ds.spacing["8"]};
   `)}
 `;

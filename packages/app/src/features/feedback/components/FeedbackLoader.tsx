@@ -2,6 +2,7 @@ import { orm } from "../../../orm";
 import { FeedbackDisplay } from "./FeedbackDisplay";
 import { zClientFeedbackPost } from "../entities/ClientFeedbackPost";
 import { feedbackPostAuthor, feedbackPostDef } from "../entities/FeedbackPost";
+import { feedbackStatus } from "../feedbackStatus";
 
 type FeedbackLoaderProps = {
   page: number;
@@ -21,6 +22,7 @@ export async function FeedbackLoader(params: FeedbackLoaderProps) {
   const page = Math.max(1, Math.min(params.page, Math.ceil(totalItems / perPage)));
 
   const fullQb = qb
+    .where("status", "!=", feedbackStatus.Enum.withdrawn)
     .offset((page - 1) * perPage)
     .limit(perPage)
     .orderBy("num_votes", "desc")

@@ -5,6 +5,7 @@ export const zClientFeedbackPost = z.object({
   id: z.string(),
   title: z.string(),
   body: z.string(),
+  author_id: z.string(),
   posted_at: z.date(),
   num_votes: z.number(),
   num_comments: z.number(),

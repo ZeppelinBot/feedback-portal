@@ -8,6 +8,9 @@ import { withSession } from "@src/features/session/session";
 import { actionRequireUser } from "@src/features/auth/checks";
 import { rootUrl } from "../../../utils/urls";
 import { redirect } from "next/navigation";
+import { rateLimitTypes, rateLimiter } from "../../ratelimits/rateLimiter";
+import { actionError } from "../../../utils/actionError";
+import { errorTypes } from "../../statusMessages/errorMessages";
 
 const zData = z.object({
   title: z.string().min(3).max(255),
@@ -18,6 +21,10 @@ export const postFeedback = withSession(async (fd) => {
   const { user, errorFn } = await actionRequireUser();
   if (! user) {
     return errorFn();
+  }
+
+  if (! rateLimiter.testRateLimit(rateLimitTypes.createPost, user.id)) {
+    return actionError("", errorTypes.rateLimited);
   }
 
   const data = zData.parse({

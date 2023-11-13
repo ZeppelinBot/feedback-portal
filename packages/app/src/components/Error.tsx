@@ -1,14 +1,24 @@
 "use client";
 
 import { ReactNode } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { ds } from "../features/style/designSystem";
+import { atBreakpoint } from "../features/style/breakpoints";
+import { useBreakpoint } from "../features/style/useBreakpoint";
 
 const Wrapper = styled.div`
   display: flex;
   gap: 16px;
   justify-content: center;
-  font-size: 24px;
   align-items: center;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  ${atBreakpoint(ds.breakpoints.lg, css`
+    font-size: 24px;
+    font-weight: 400;
+  `)}
 `;
 
 type ErrorProps = {
@@ -17,9 +27,12 @@ type ErrorProps = {
 };
 
 export function Error(props: ErrorProps) {
+  const isMobile = useBreakpoint(ds.breakpoints.lg, true);
+  const iconSize = isMobile ? 24 : 48;
+
   return (
     <Wrapper>
-      {props.icon && <div><props.icon size={48} /></div>}
+      {props.icon && <div><props.icon size={iconSize} /></div>}
       <div>{props.children}</div>
     </Wrapper>
   );

@@ -9,6 +9,8 @@ import { rootUrl } from "../../../utils/urls";
 import { actionError } from "../../../utils/actionError";
 import { redirect } from "next/navigation";
 import { fdToObject } from "../../../utils/fdToObject";
+import { rateLimitTypes, rateLimiter } from "../../ratelimits/rateLimiter";
+import { errorTypes } from "../../statusMessages/errorMessages";
 
 const zData = z.object({
   post_id: z.string(),
@@ -21,13 +23,17 @@ export const postComment = withSession(async (fd: FormData) => {
     return errorFn();
   }
 
+  if (! rateLimiter.testRateLimit(rateLimitTypes.createPost, user.id)) {
+    return actionError("", errorTypes.rateLimited);
+  }
+
   const data = zData.parse(fdToObject(fd));
   const post = await feedbackPosts.getById(data.post_id);
   if (! post) {
-    return actionError("", "Unknown post");
+    return actionError("", errorTypes.unknownPost);
   }
 
-  const comment = await feedbackComments.create({
+  await feedbackComments.create({
     post_id: data.post_id,
     body: data.body,
     author_id: user.id,

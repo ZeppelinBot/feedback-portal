@@ -6,6 +6,7 @@ import { feedbackComments } from "../repositories/feedbackComments";
 import { actionRequireUser } from "../../auth/checks";
 import { actionError } from "../../../utils/actionError";
 import { actionSuccess } from "../../../utils/actionSuccess";
+import { errorTypes } from "../../statusMessages/errorMessages";
 
 const zData = zFormData(z.object({
   comment_id: z.string(),
@@ -16,7 +17,7 @@ export async function deleteComment(rawData: FormData) {
 
   const comment = await feedbackComments.getById(parsed.comment_id);
   if (! comment) {
-    return actionError("", "Comment not found");
+    return actionError("", errorTypes.commentNotFound);
   }
 
   const { user, errorFn } = await actionRequireUser(user => {

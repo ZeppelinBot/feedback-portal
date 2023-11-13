@@ -8,6 +8,7 @@ import { actionRequireUser } from "../../auth/checks";
 import { rootUrl } from "../../../utils/urls";
 import { redirect } from "next/navigation";
 import { actionError } from "../../../utils/actionError";
+import { errorTypes } from "../../statusMessages/errorMessages";
 
 const zData = z.object({
   post_id: z.string().uuid(),
@@ -27,7 +28,7 @@ export const setPostStatus = withSession(async (fd: FormData) => {
 
   const post = await feedbackPosts.getById(data.post_id);
   if (! post) {
-    return actionError("/", "Post not found");
+    return actionError("/", errorTypes.postNotFound);
   }
 
   await feedbackPosts.updateById(post.id, {

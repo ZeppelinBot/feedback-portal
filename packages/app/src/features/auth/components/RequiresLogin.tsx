@@ -6,15 +6,18 @@ import { Button } from "../../../components/Button";
 import { VSpacer } from "../../../components/VSpacer";
 import { Error } from "../../../components/Error";
 import { Centered } from "../../../components/Centered";
+import { login } from "../actions/login";
 
 export function RequiresLogin(): ReactNode {
   return <>
     <Error icon={ShieldAlt2}>
-      This page requires you to log in to view it
+      You need to log in to view this page
     </Error>
     <VSpacer size="8" />
     <Centered>
-      <Button $size="large" $variant="primary">Log in</Button>
+      <form action={login}>
+        <Button $size="large" $variant="primary">Log in</Button>
+      </form>
     </Centered>
   </>;
 }

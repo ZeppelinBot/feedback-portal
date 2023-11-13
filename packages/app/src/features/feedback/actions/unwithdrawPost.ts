@@ -7,19 +7,22 @@ import { withSession } from "../../session/session";
 import { actionRequireUser } from "../../auth/checks";
 import { actionError } from "../../../utils/actionError";
 import { redirect } from "next/navigation";
+import { parseJsonFromFormData } from "../../../utils/parseJsonFromFormData";
+import { errorTypes } from "../../statusMessages/errorMessages";
 
 const zData = z.object({
   post_id: z.string().uuid(),
 });
 
 export const unwithdrawPost = withSession(async (fd: FormData) => {
-  const data = zData.parse({
-    post_id: fd.get("post_id"),
-  });
+  const { success, data, error } = parseJsonFromFormData(fd, "data", zData);
+  if (! success) {
+    return actionError("", errorTypes.inputError);
+  }
 
   const post = await feedbackPosts.getById(data.post_id);
   if (! post) {
-    return actionError("", "Post not found");
+    return actionError("/", errorTypes.postNotFound);
   }
 
   const { user, errorFn } = await actionRequireUser(user => {
@@ -30,7 +33,7 @@ export const unwithdrawPost = withSession(async (fd: FormData) => {
   }
 
   if (post.status !== feedbackStatus.Enum.withdrawn) {
-    return actionError("", "Only posts with the status 'withdrawn' can be unwithdrawn");
+    return actionError("", errorTypes.cantUnwithdraw);
   }
 
   await feedbackPosts.updateById(post.id, {

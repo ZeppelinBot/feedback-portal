@@ -17,7 +17,7 @@ const PaginationWrapper = styled.div`
   display: flex;
   justify-content: center;
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     justify-content: flex-end;
     height: 36px;
   `)}
@@ -29,7 +29,7 @@ const DisplayHeader = styled.div`
   align-items: flex-end;
   margin-bottom: 16px;
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     justify-content: space-between;
   `)}
 `;
@@ -39,7 +39,7 @@ const DisplayFooter = styled.div`
   justify-content: center;
   margin-top: 16px;
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     justify-content: flex-end;
   `)}
 `;

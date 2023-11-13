@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { feedbackPostAuthor, feedbackPostComments } from "../entities/FeedbackPost";
+import { FeedbackPost, feedbackPostAuthor, feedbackPostComments } from "../entities/FeedbackPost";
 import { zClientFeedbackPost } from "../entities/ClientFeedbackPost";
 import { ClientViewFeedbackPage } from "./ClientViewFeedbackPage";
 import { feedbackCommentAuthor } from "../entities/FeedbackComment";
@@ -12,6 +12,7 @@ import { feedbackPosts } from "../repositories/feedbackPosts";
 import { withSession } from "../../session/session";
 import { NotFound } from "../../../components/NotFound";
 import { apiRequireUser } from "../../auth/checks";
+import { feedbackStatus } from "../feedbackStatus";
 
 type Props = {
   params: { id: string };
@@ -19,9 +20,13 @@ type Props = {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const post = await feedbackPosts.getById(props.params.id);
-  return {
+  const metadata: Metadata = {
     title: post?.title ?? "Not found",
   };
+  if (! post || post.status === feedbackStatus.Enum.withdrawn) {
+    metadata.robots = "noindex";
+  }
+  return metadata;
 }
 
 export const dynamic = "force-dynamic";

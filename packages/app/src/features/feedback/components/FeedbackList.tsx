@@ -40,12 +40,22 @@ const FeedbackListLink = styled(NextLink)`
     color: ${ds.colorPresets.bodyText};
   }
 
+  transition: background-color 67ms ease-out;
+  &:hover {
+    transition-duration: 34ms;
+  }
+
   ${inLightTheme(css`
     background-color: white;
 
     &:hover {
       border-color: ${ds.colors.gray.light["300"]};
       background-color: ${ds.colors.gray.light["200"]};
+    }
+
+    &:hover:active {
+      filter: brightness(0.95);
+      transition: filter 67ms ease-out;
     }
   `)}
 
@@ -59,14 +69,14 @@ const FeedbackListLink = styled(NextLink)`
 
   padding: 12px 22px;
 
-  ${untilBreakpoint(ds.breakpoints.md, css`
+  ${untilBreakpoint(ds.breakpoints.lg, css`
     grid-template-areas:
       "title title title"
       "votes date comments";
     grid-template-columns: 1fr 1fr 1fr;
   `)}
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     grid-template-areas:
       "votes title  comments"
       "votes author comments";
@@ -79,7 +89,7 @@ const FeedbackTitle = styled.div`
   grid-area: title;
   font-weight: 500;
 
-  ${untilBreakpoint(ds.breakpoints.md, css`
+  ${untilBreakpoint(ds.breakpoints.lg, css`
     margin-bottom: 16px;
   `)}
 `;
@@ -90,7 +100,7 @@ const FeedbackAuthor = styled.div`
   color: ${ds.colors.gray.dynamic["500"]};
 
   display: none;
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     display: block;
   `)}
 `;
@@ -103,7 +113,7 @@ const FeedbackVotes = styled.div`
   justify-content: flex-start;
   gap: 4px;
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     justify-content: flex-start;
   `)}
 `;
@@ -116,7 +126,7 @@ const FeedbackDate = styled.div`
   justify-content: center;
   gap: 6px;
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     display: none;
   `)}
 `;
@@ -129,7 +139,7 @@ const FeedbackComments = styled.div`
   justify-content: flex-end;
   gap: 6px;
 
-  ${atBreakpoint(ds.breakpoints.md, css`
+  ${atBreakpoint(ds.breakpoints.lg, css`
     justify-content: flex-start;
   `)}
 `;

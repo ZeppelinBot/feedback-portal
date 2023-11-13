@@ -1,23 +1,13 @@
 import { ReactNode } from "react";
-import styled, { css } from "styled-components";
-import { atBreakpoint } from "../style/breakpoints";
-import { ds } from "../style/designSystem";
+import { ClientUser } from "../auth/entities/ClientUser";
+import { ClientMobileFooter } from "./ClientMobileFooter";
 
-const MobileFooterWrapper = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+type MobileFooterProps = {
+  currentUser: ClientUser | null;
+};
 
-  ${atBreakpoint(ds.breakpoints.sm, css`
-    display: none;
-  `)}
-`;
-
-export function MobileFooter(): ReactNode {
+export function MobileFooter(props: MobileFooterProps): ReactNode {
   return (
-    <MobileFooterWrapper>
-      Hello
-    </MobileFooterWrapper>
+    <ClientMobileFooter currentUser={props.currentUser} />
   );
 }

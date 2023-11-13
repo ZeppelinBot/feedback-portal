@@ -12,6 +12,8 @@ type ClientTimeProps = {
 };
 
 export function HumanizedTime(props: ClientTimeProps) {
-  const humanized = (props.humanizer ?? defaultHumanizer)(Date.now() - props.time.valueOf());
-  return <time dateTime={props.time.toISOString()} suppressHydrationWarning>{humanized}</time>;
+  const diff = Date.now() - props.time.valueOf();
+  const humanized = (props.humanizer ?? defaultHumanizer)(diff);
+  const str = diff > 0 ? `${humanized} ago` : `in ${humanized}`;
+  return <time dateTime={props.time.toISOString()} title={props.time.toISOString()} suppressHydrationWarning>{str}</time>;
 }

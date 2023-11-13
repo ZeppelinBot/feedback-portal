@@ -17,7 +17,6 @@ import { TextWithLoading } from "../../../components/TextWithLoading";
 import { Loader } from "../../../components/Loader";
 import { FormSubmit } from "../../../components/FormSubmit";
 import { ds } from "../../style/designSystem";
-import { H3 } from "../../../components/H3";
 import { unvotePost } from "../actions/unvotePost";
 import { votePost } from "../actions/votePost";
 import { ServerActionButton } from "../../../components/ServerActionButton";
@@ -27,9 +26,11 @@ import { ClientUser } from "../../auth/entities/ClientUser";
 import { ClientFeedbackComment } from "../entities/ClientFeedbackComment";
 import { ClientAnonymousUser } from "../../auth/entities/ClientAnonymousUser";
 import { User } from "../../auth/entities/User";
-import { DynamicTime } from "../../../utils/DynamicTime";
-import { Time } from "@styled-icons/boxicons-solid";
 import { HumanizedTime } from "../../../utils/HumanizedTime";
+import { withdrawPost } from "../actions/withdrawPost";
+import { feedbackStatus } from "../feedbackStatus";
+import { unwithdrawPost } from "../actions/unwithdrawPost";
+import { atBreakpoint } from "../../style/breakpoints";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 
@@ -39,8 +40,14 @@ const Subtitle = styled.div`
 
 const Header = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 8px;
+
+  ${atBreakpoint(ds.breakpoints.md, css`
+    flex-direction: row;
+  `)}
 `;
 
 const Actions = styled.div`
@@ -145,18 +152,17 @@ type ClientPageProps = {
 };
 
 export function ClientViewFeedbackPage(props: ClientPageProps) {
-  const postedAt = dayjs.utc(props.post.posted_at);
   const [postingComment, setPostingComment] = useState(false);
-  const [voting, setVoting] = useState(false);
 
-  new Date()
+  const isCurrentUser = props.user != null && props.user.id === props.post.author_id;
+  const isAdmin = props.user != null && props.user.role === "ADMIN";
 
   return (
     <div>
       <Header>
         <div>
           <H1>{props.post.title}</H1>
-          <Subtitle>Posted by <Username user={props.post.author!} /> <HumanizedTime time={props.post.posted_at} /> ago</Subtitle>
+          <Subtitle>Posted by <Username user={props.post.author!} /> <HumanizedTime time={props.post.posted_at} /></Subtitle>
         </div>
         <Actions>
           <Votes $hasUserVote={props.hasUserVote}>
@@ -165,17 +171,17 @@ export function ClientViewFeedbackPage(props: ClientPageProps) {
           </Votes>
           {(props.user && props.hasUserVote) && (
             <ServerActionButton action={unvotePost} $data={{ post_id: props.post.id }}>
-            {(loading) => (
-              <Button disabled={loading}>
-                <TextWithLoading
-                  loading={loading}
-                  component={<Loader />}
-                >
-                  Unvote
-                </TextWithLoading>
-              </Button>
-            )}
-          </ServerActionButton>
+              {(loading) => (
+                <Button disabled={loading}>
+                  <TextWithLoading
+                    loading={loading}
+                    component={<Loader />}
+                  >
+                    Unvote
+                  </TextWithLoading>
+                </Button>
+              )}
+            </ServerActionButton>
           )}
           {(props.user && ! props.hasUserVote) && (
             <ServerActionButton action={votePost} $data={{ post_id: props.post.id }}>
@@ -191,10 +197,43 @@ export function ClientViewFeedbackPage(props: ClientPageProps) {
               )}
             </ServerActionButton>
           )}
-          {props.user && "id" in props.post.author && props.post.author.id === props.user.id && <>
+          {(isCurrentUser || isAdmin) && <>
             <NextLinkButton $variant="secondary" href={`/feedback/${props.post.id}/edit`}>
               Edit
             </NextLinkButton>
+          </>}
+          {isCurrentUser && (
+            props.post.status === feedbackStatus.enum.withdrawn
+              ? (
+                <ServerActionButton action={unwithdrawPost} $data={{ post_id: props.post.id }}>
+                  {(loading) => (
+                    <Button $variant="danger" disabled={loading}>
+                      <TextWithLoading
+                        loading={loading}
+                        component={<Loader />}
+                      >
+                        Un-withdraw
+                      </TextWithLoading>
+                    </Button>
+                  )}
+                </ServerActionButton>
+              )
+              : (
+                <ServerActionButton action={withdrawPost} $data={{ post_id: props.post.id }}>
+                  {(loading) => (
+                    <Button $variant="danger" disabled={loading}>
+                      <TextWithLoading
+                        loading={loading}
+                        component={<Loader />}
+                      >
+                        Withdraw
+                      </TextWithLoading>
+                    </Button>
+                  )}
+                </ServerActionButton>
+              )
+          )}
+          {isAdmin && <>
             <Button $variant="danger">
               Delete
             </Button>
@@ -259,7 +298,7 @@ export function ClientViewFeedbackPage(props: ClientPageProps) {
                     <Username user={comment.author!} />
                   </CommentAuthorName>
                   <CommentDate>
-                    <HumanizedTime time={comment.posted_at} /> ago
+                    <HumanizedTime time={comment.posted_at} />
                   </CommentDate>
                 </CommentName>
                 <CommentBody>

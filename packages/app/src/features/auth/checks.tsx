@@ -3,6 +3,7 @@ import { getCurrentUser } from "./auth";
 import { RequiresLogin } from "./components/RequiresLogin";
 import { User } from "./entities/User";
 import { actionError } from "../../utils/actionError";
+import { errorTypes } from "../statusMessages/errorMessages";
 
 type RequireUserCheckFn = (user: User) => boolean | Promise<boolean>;
 
@@ -72,13 +73,13 @@ export async function actionRequireUser(check?: RequireUserCheckFn): Promise<Act
   if (! currentUser) {
     return {
       user: null,
-      errorFn: () => actionError("", "Unauthorized"),
+      errorFn: () => actionError("", errorTypes.unauthorized),
     };
   }
   if (check && ! (await check(currentUser))) {
     return {
       user: null,
-      errorFn: () => actionError("", "Forbidden"),
+      errorFn: () => actionError("", errorTypes.forbidden),
     };
   }
   return {

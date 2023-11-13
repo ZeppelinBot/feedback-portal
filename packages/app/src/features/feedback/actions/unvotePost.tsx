@@ -8,6 +8,7 @@ import { actionRequireUser } from "@src/features/auth/checks";
 import { rootUrl } from "../../../utils/urls";
 import { actionError } from "../../../utils/actionError";
 import { redirect } from "next/navigation";
+import { errorTypes } from "../../statusMessages/errorMessages";
 
 const zData = z.object({
   post_id: z.string(),
@@ -22,7 +23,7 @@ export const unvotePost = withSession(async (rawData: FormData) => {
   const data = zData.parse(JSON.parse(String(rawData.get("data") ?? "null")));
   const post = await feedbackPosts.getById(data.post_id);
   if (! post) {
-    return actionError("/", "Unknown post");
+    return actionError("/", errorTypes.unknownPost);
   }
 
   await feedbackVotes.remove(user.id, post.id);

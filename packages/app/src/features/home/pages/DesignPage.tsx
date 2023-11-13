@@ -9,7 +9,13 @@ import { H2 } from "../../../components/H2";
 import { H3 } from "../../../components/H3";
 import { Paragraph } from "../../../components/Paragraph";
 import { Button, ButtonIcon } from "../../../components/Button";
-import { Save } from "@styled-icons/boxicons-solid";
+import { CheckCircle, InfoCircle, Save } from "@styled-icons/boxicons-solid";
+import { ErrorAlt as ErrorIcon } from "@styled-icons/boxicons-solid";
+import { GenericBanner } from "../../statusMessages/components/GenericBanner";
+import { VSpacer } from "../../../components/VSpacer";
+import { ErrorBanner } from "../../statusMessages/components/ErrorBanner";
+import { SuccessBanner } from "../../statusMessages/components/SuccessBanner";
+import { InfoBanner } from "../../statusMessages/components/InfoBanner";
 
 const Wrapper = styled.div`
   display: flex;
@@ -57,6 +63,41 @@ export default function DesignPage(): ReactElement {
             Maecenas porttitor orci a libero mollis varius id ut sapien.
             Vestibulum eget condimentum libero, et fermentum ipsum.
           </Paragraph>
+          <GenericBanner
+            message="This is a generic banner without an icon"
+          />
+          <VSpacer size="6" />
+          <GenericBanner
+            icon={InfoCircle}
+            message="This is a generic banner with an icon"
+          />
+          <VSpacer size="6" />
+          <ErrorBanner
+            message="This is an error banner without an icon"
+          />
+          <VSpacer size="6" />
+          <ErrorBanner
+            icon={ErrorIcon}
+            message="This is an error banner with an icon"
+          />
+          <VSpacer size="6" />
+          <SuccessBanner
+            message="This is a success banner without an icon"
+          />
+          <VSpacer size="6" />
+          <SuccessBanner
+            icon={CheckCircle}
+            message="This is a success banner with an icon"
+          />
+          <VSpacer size="6" />
+          <InfoBanner
+            message="This is an info banner without an icon"
+          />
+          <VSpacer size="6" />
+          <InfoBanner
+            icon={InfoCircle}
+            message="This is an info banner with an icon"
+          />
           {buttonSizes.map(buttonSize => (
             <ButtonList key={buttonSize}>
               {buttonVariants.map(buttonVariant => (
